@@ -2,31 +2,32 @@ import React, {ChangeEvent, ChangeEventHandler} from 'react';
 
 import s from './MyPosts.module.css';
 import Posts from "./Post/Post";
-import {messageType} from "../../../redux/state";
+import {ActionsTypes, messageType} from "../../../redux/state";
 
 
 type stateMyPostsType = {
     message: messageType[]
-    addNewPost: (post: string) => void;
-    newPostText:string;
-    changeNewPostCallBack: (newPost: string) => void;
+    newPostText: string;
+
+    dispatch: (action: ActionsTypes) => void;
 }
 
 function MyPosts(props: stateMyPostsType) {
 
-    let messageData = props.message.map(el => <Posts  message={el.message} like={el.likeCount}/>)
+    let messageData = props.message.map(el => <Posts message={el.message} like={el.likeCount}/>)
     let addPost = () => {
-            props.addNewPost(props.newPostText)
-        }
-    let addPostChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-        props.changeNewPostCallBack(e.currentTarget.value)
+        props.dispatch({type: "ADD-POST", post: props.newPostText})
+    }
+    let addPostChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+
+        props.dispatch({type: "CHANGE-NEW-POST-TEXT", newPost: e.currentTarget.value})
     }
     return (
         <div className={s.postsBLock}>
             <h3>My posts</h3>
             <div>
                 <div>
-                    <textarea value={props.newPostText} onChange={addPostChange}></textarea>
+                    <textarea value={props.newPostText} onChange={addPostChange}/>
                 </div>
                 <div>
                     <button onClick={addPost}>add new post</button>
