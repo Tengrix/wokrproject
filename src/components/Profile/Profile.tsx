@@ -1,14 +1,13 @@
 import React from 'react';
 import MyPosts from "./MyPosts/MyPosts";
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import store, {ActionsTypes, AddPostActionType, ChangeNewPostActionType, messageType} from "../../redux/state";
+import store, {messageType} from "../../redux/store";
+import {ActionsTypesF} from "../../redux/ActionTypes";
 
 type stateProfileType = {
     message: messageType[]
     newPostText: string;
-
-    dispatch: (action: ActionsTypes) => void;
-
+    dispatch: (action: ActionsTypesF) => void;
 }
 
 function Profile(props: stateProfileType) {

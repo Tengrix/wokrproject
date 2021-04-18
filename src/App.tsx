@@ -8,7 +8,7 @@ import {BrowserRouter, Route} from 'react-router-dom'
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
-import store, {StoreType} from './redux/state'
+import store, {StoreType} from './redux/store'
 import Friends from "./components/Friends/Friends";
 
 type PropsType = {
@@ -22,8 +22,10 @@ const App: React.FC<PropsType> = (props) => {
                 <Header/>
                 <Navbar/>
                 <div className={'app-wrapper-content'}>
-                    <Route path='/dialogs' render={() => <Dialogs users={props.store._state.dialogsPage.users}
-                                                                  messages={props.store._state.dialogsPage.messages}
+                    <Route path='/dialogs' render={() => <Dialogs users={store._state.dialogsPage.users}
+                                                                  messages={store._state.dialogsPage.messages}
+                                                                  dispatch={store.dispatch.bind(store)}
+                                                                  newMessageBody={store._state.dialogsPage.newMessageBody}
                     />}/>
                     <Route path='/profile' render={() => <Profile message={props.store._state.profilePage.message}
                                                                   dispatch={store.dispatch.bind(store)}

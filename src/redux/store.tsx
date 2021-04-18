@@ -1,3 +1,8 @@
+import {profileReducer} from "./profile-reducer";
+import {dialogReducer} from "./dialog-reducer";
+import {friendsReducer} from "./friends-reducer";
+import {ActionsTypesF} from "./ActionTypes";
+
 export type messageType = {
     message: string;
     likeCount: number;
@@ -22,6 +27,7 @@ export type profilePageType = {
 export type dialogsPageType = {
     users: userType[]
     messages: messagesType[]
+    newMessageBody: string
 }
 export type sidebarsType = {
     friends: sidebarType[]
@@ -31,24 +37,13 @@ export type stateRootType = {
     dialogsPage: dialogsPageType
     sidebar: sidebarsType
 }
-
 export type StoreType = {
     _state: stateRootType;
     _onChange: () => void;
     subscribe: (observer: () => void) => void;
     getState: () => stateRootType;
-    dispatch: (action: ActionsTypes) => void;
+    dispatch: (action: ActionsTypesF) => void;
 }
-export type AddPostActionType = {
-    type: 'ADD-POST';
-    post: string;
-}
-export type ChangeNewPostActionType = {
-    type: 'CHANGE-NEW-POST-TEXT';
-    newPost: string;
-}
-export type ActionsTypes = AddPostActionType | ChangeNewPostActionType
-
 let store: StoreType = {
     _state: {
         profilePage: {
@@ -73,7 +68,8 @@ let store: StoreType = {
                 {id: 2, messages: 'What\'s up?'},
                 {id: 3, messages: 'How\'s it going?'},
 
-            ]
+            ],
+            newMessageBody: ''
         },
         sidebar: {
             friends: [
@@ -93,19 +89,12 @@ let store: StoreType = {
         this._onChange = observer
     },
     dispatch(action) {
-        if (action.type === 'ADD-POST') {
-            const newPost: messageType = {
-                id: 3,
-                message: action.post,
-                likeCount: 0
-            };
-            this._state.profilePage.message.push(newPost)
-            this._state.profilePage.newPostText = ''
-            this._onChange()
-        } else if (action.type === 'CHANGE-NEW-POST-TEXT') {
-            this._state.profilePage.newPostText = action.newPost
-            this._onChange()
-        }
+
+        this._state.profilePage = profileReducer(this._state.profilePage, action)
+        this._state.dialogsPage = dialogReducer(this._state.dialogsPage, action)
+        this._state.sidebar = friendsReducer(this._state.sidebar, action)
+        this._onChange()
+
     }
 }
 
