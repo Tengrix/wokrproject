@@ -1,27 +1,17 @@
 import React, {ChangeEvent} from 'react';
-
 import s from './MyPosts.module.css';
 import Posts from "./Post/Post";
-import { messageType} from "../../../redux/store";
-import {ActionsTypesF, addPostAC, changeNewTextAC} from "../../../redux/ActionTypes";
+import {ProfilePropsType} from "./MyPostsContainer";
 
 
-type stateMyPostsType = {
-    message: messageType[]
-    newPostText: string;
-    dispatch: (action: ActionsTypesF) => void;
-}
-
-
-function MyPosts(props: stateMyPostsType) {
+function MyPosts(props: ProfilePropsType) {
 
     let messageData = props.message.map(el => <Posts message={el.message} like={el.likeCount}/>)
     let addPost = () => {
-        props.dispatch(addPostAC(props.newPostText))
+        props.addPost()
     }
     let addPostChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-
-        props.dispatch(changeNewTextAC(e.currentTarget.value))
+        props.changeNewText(e.currentTarget.value)
     }
     return (
         <div className={s.postsBLock}>

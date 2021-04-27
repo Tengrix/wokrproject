@@ -1,45 +1,79 @@
-import {profileReducer} from "./profile-reducer";
-import {dialogReducer} from "./dialog-reducer";
-import {friendsReducer} from "./friends-reducer";
-import {ActionsTypesF} from "./ActionTypes";
+import profileReducer from "./profile-reducer";
+import dialogReducer from "./dialog-reducer";
+import friendsReducer from "./friends-reducer";
 
-export type messageType = {
+export const ADD_POST = 'ADD-POST'
+export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
+export const UPDATE_NEW_MESSAGE_BODY = 'NEW-MESSAGE-BODY'
+export const SEND_MESSAGE = 'SEND-MESSAGE'
+export type ActionsTypesF =
+    ReturnType<typeof newMessageBody> |
+    ReturnType<typeof sendMessage> |
+    ReturnType<typeof addPostAC> |
+    ReturnType<typeof changeNewTextAC>
+
+export const addPostAC = () => {
+    return {
+        type: ADD_POST,
+    } as const
+}
+export const changeNewTextAC = (newPost: string) => {
+    return {
+        type: CHANGE_NEW_POST_TEXT,
+        newPost: newPost
+    } as const
+}
+export const newMessageBody = (body: string) => {
+    return {
+        type: UPDATE_NEW_MESSAGE_BODY,
+        body: body
+    } as const
+
+}
+export const sendMessage = () => {
+    return {
+        type: SEND_MESSAGE
+    } as const
+
+}
+
+type messageType = {
     message: string;
     likeCount: number;
     id: number
 }
-export type userType = {
+type userType = {
     id: string;
     name: string;
 }
-export type messagesType = {
+type messagesType = {
     id: number;
     messages: string;
 }
-export type sidebarType = {
+type sidebarType = {
     id: number;
     name: string;
 }
-export type profilePageType = {
+type profilePageType = {
     message: messageType[],
     newPostText: string;
 }
-export type dialogsPageType = {
+type dialogsPageType = {
     users: userType[]
     messages: messagesType[]
     newMessageBody: string
 }
-export type sidebarsType = {
+type sidebarsType = {
     friends: sidebarType[]
 }
-export type stateRootType = {
+type stateRootType = {
     profilePage: profilePageType
     dialogsPage: dialogsPageType
     sidebar: sidebarsType
 }
 export type StoreType = {
     _state: stateRootType;
-    _onChange: () => void;
+    _onChange: (state: stateRootType) => void;
     subscribe: (observer: () => void) => void;
     getState: () => stateRootType;
     dispatch: (action: ActionsTypesF) => void;
@@ -88,12 +122,11 @@ let store: StoreType = {
     subscribe(observer) {
         this._onChange = observer
     },
-    dispatch(action) {
-
+    dispatch(action: ActionsTypesF) {
         this._state.profilePage = profileReducer(this._state.profilePage, action)
         this._state.dialogsPage = dialogReducer(this._state.dialogsPage, action)
         this._state.sidebar = friendsReducer(this._state.sidebar, action)
-        this._onChange()
+        this._onChange(this._state)
 
     }
 }

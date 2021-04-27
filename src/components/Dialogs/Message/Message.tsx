@@ -1,4 +1,4 @@
-import React, {ChangeEvent, LegacyRef} from 'react'
+import React from 'react'
 import s from "./Message.module.css";
 
 type setMessageType = {

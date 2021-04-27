@@ -1,8 +1,22 @@
-import {sidebarsType} from "./store";
-import {ActionsTypesF} from "./ActionTypes";
+import {ActionsTypesF} from "./store";
 
+type sidebarType = {
+    id: number;
+    name: string;
+}
+export type InitialStateType = {
+    friends: sidebarType[]
+}
+let initialState: InitialStateType = {
+    friends: [
+        {id: 1, name: 'Abay'},
+        {id: 2, name: 'Karik'},
+        {id: 3, name: 'Samal'}
+    ]
+}
 
-export const friendsReducer = (state:sidebarsType, action:ActionsTypesF) => {
+export const friendsReducer = (state:InitialStateType = initialState, action:ActionsTypesF): InitialStateType => {
 
     return state
 }
+export default friendsReducer

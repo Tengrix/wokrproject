@@ -2,17 +2,10 @@ import React, {ChangeEvent} from 'react'
 import s from './Dialogs.module.css'
 import DialogItems from "./DialogItems/DialogItems";
 import Message from "./Message/Message";
-import {messagesType, userType} from '../../redux/store'
-import {ActionsTypesF, newMessageBody, sendMessage} from "../../redux/ActionTypes";
+import {DialogsPropsType} from "./DialogsContainer";
 
-type stateDialogsType = {
-    users: userType[]
-    messages: messagesType[]
-    dispatch: (action: ActionsTypesF) => void;
-    newMessageBody:string
-}
 
-function Dialogs(props: stateDialogsType) {
+function Dialogs(props: DialogsPropsType) {
 
     let usersData = props.users.map(el => <DialogItems
         name={el.name}
@@ -24,10 +17,10 @@ function Dialogs(props: stateDialogsType) {
     />)
     let createMessageBody = props.newMessageBody
     let onNewMessageClick = () => {
-        props.dispatch(sendMessage())
+        props.sendMessage()
     }
-    let onSendMessageChange = (e:ChangeEvent<HTMLTextAreaElement>) => {
-        props.dispatch(newMessageBody(e.currentTarget.value))
+    let onSendMessageChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        props.updatedMessageBody(e.currentTarget.value)
     }
 
     return (
@@ -47,7 +40,9 @@ function Dialogs(props: stateDialogsType) {
                         onChange={onSendMessageChange}
                     ></textarea>
                     </div>
-                    <div> <button onClick={onNewMessageClick}>Send</button> </div>
+                    <div>
+                        <button onClick={onNewMessageClick}>Send</button>
+                    </div>
                 </div>
 
             </div>
