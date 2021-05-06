@@ -1,6 +1,18 @@
 
-import {ActionsTypesF, ADD_POST, CHANGE_NEW_POST_TEXT} from "./store";
-
+import {ActionsTypesF} from "./store";
+export const ADD_POST = 'ADD-POST'
+export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
+export const addPostAC = () => {
+    return {
+        type: ADD_POST,
+    } as const
+}
+export const changeNewTextAC = (newPost: string) => {
+    return {
+        type: CHANGE_NEW_POST_TEXT,
+        newPost: newPost
+    } as const
+}
 export type messageType = {
     message: string;
     likeCount: number;
@@ -29,16 +41,17 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
                 message: state.newPostText,
                 likeCount: 0
             };
-            let stateCopy = {...state};
-            stateCopy.message = [...state.message];
-            stateCopy.message.push(newPost);
-            stateCopy.newPostText = ''
-            return stateCopy;
+            return {
+                ...state,
+                message: [...state.message, newPost],
+                newPostText: ''
+            };
         }
         case CHANGE_NEW_POST_TEXT:{
-            let stateCopy = {...state}
-            stateCopy.newPostText = action.newPost
-            return stateCopy;
+            return{
+                ...state,
+                newPostText:action.newPost
+            }
         }
         default:
             return state;

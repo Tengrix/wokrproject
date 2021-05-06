@@ -1,10 +1,14 @@
 import React from 'react'
 import {Dispatch} from "redux";
-import {newMessageBody, sendMessage} from "../../redux/store";
 import Dialogs from "./Dialogs";
 import {connect} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
-import {messagesType, userType} from "../../redux/dialog-reducer";
+import {
+    messagesType,
+    newMessageBodyAC,
+    sendMessageAC,
+    userType
+} from "../../redux/dialog-reducer";
 
 type MapStateToPropsType = {
     users: userType[];
@@ -30,10 +34,10 @@ let mapStateToProps = (state:AppStateType) :MapStateToPropsType => {
 let mapDispatchToProps = (dispatch:Dispatch) : MapDispatchToPropsType => {
     return {
         updatedMessageBody: (text:string) => {
-            dispatch(newMessageBody(text))
+            dispatch(newMessageBodyAC(text))
         },
         sendMessage: () => {
-            dispatch(sendMessage())
+            dispatch(sendMessageAC())
         }
     }
 }

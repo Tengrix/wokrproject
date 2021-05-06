@@ -1,41 +1,16 @@
-import profileReducer from "./profile-reducer";
-import dialogReducer from "./dialog-reducer";
+import profileReducer, {addPostAC, changeNewTextAC} from "./profile-reducer";
+import dialogReducer, {newMessageBodyAC, sendMessageAC} from "./dialog-reducer";
 import friendsReducer from "./friends-reducer";
-
-export const ADD_POST = 'ADD-POST'
-export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
-export const UPDATE_NEW_MESSAGE_BODY = 'NEW-MESSAGE-BODY'
-export const SEND_MESSAGE = 'SEND-MESSAGE'
+import {followAC, setUsersAC, unFollowAC} from "./users-reducer";
 export type ActionsTypesF =
-    ReturnType<typeof newMessageBody> |
-    ReturnType<typeof sendMessage> |
+    ReturnType<typeof newMessageBodyAC> |
+    ReturnType<typeof sendMessageAC> |
     ReturnType<typeof addPostAC> |
-    ReturnType<typeof changeNewTextAC>
+    ReturnType<typeof changeNewTextAC>|
+    ReturnType<typeof followAC>|
+    ReturnType<typeof unFollowAC>|
+    ReturnType<typeof setUsersAC>
 
-export const addPostAC = () => {
-    return {
-        type: ADD_POST,
-    } as const
-}
-export const changeNewTextAC = (newPost: string) => {
-    return {
-        type: CHANGE_NEW_POST_TEXT,
-        newPost: newPost
-    } as const
-}
-export const newMessageBody = (body: string) => {
-    return {
-        type: UPDATE_NEW_MESSAGE_BODY,
-        body: body
-    } as const
-
-}
-export const sendMessage = () => {
-    return {
-        type: SEND_MESSAGE
-    } as const
-
-}
 
 type messageType = {
     message: string;
@@ -54,6 +29,7 @@ type sidebarType = {
     id: number;
     name: string;
 }
+
 type profilePageType = {
     message: messageType[],
     newPostText: string;

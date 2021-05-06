@@ -1,4 +1,7 @@
-import {ActionsTypesF, SEND_MESSAGE, UPDATE_NEW_MESSAGE_BODY} from "./store";
+import {ActionsTypesF} from "./store";
+
+export const UPDATE_NEW_MESSAGE_BODY = 'NEW-MESSAGE-BODY'
+export const SEND_MESSAGE = 'SEND-MESSAGE'
 
 export type messagesType = {
     id: number;
@@ -8,6 +11,7 @@ export type userType = {
     id: string;
     name: string;
 }
+
 
 export type InitialStateType = {
     users: userType[]
@@ -34,21 +38,50 @@ let initialState: InitialStateType = {
 
 export const dialogReducer = (state: InitialStateType = initialState, action: ActionsTypesF):InitialStateType => {
     switch (action.type){
-        case UPDATE_NEW_MESSAGE_BODY:{
-            let stateCopy = {...state}
-            stateCopy.newMessageBody = action.body
-            return stateCopy
-        }
-        case SEND_MESSAGE:{
-            let stateCopy = {...state}
-            let body = stateCopy.newMessageBody
-            stateCopy.messages = [...state.messages]
-            stateCopy.messages.push({id: 6, messages: body})
-            stateCopy.newMessageBody = ''
-            return stateCopy
-        }
+        case UPDATE_NEW_MESSAGE_BODY:
+            return {
+                ...state,
+                newMessageBody: action.body
+            }
+        case SEND_MESSAGE:
+            let body = state.newMessageBody
+            return {
+                ...state,
+                messages: [...state.messages, {id:6, messages: body} ],
+                newMessageBody: ''
+            }
         default:
             return state
     }
 }
+export const newMessageBodyAC= (body: string) => {
+    return {
+        type: UPDATE_NEW_MESSAGE_BODY,
+        body: body
+    } as const
+
+}
+export const sendMessageAC = () => {
+    return {
+        type: SEND_MESSAGE
+    } as const
+
+}
+// type dialogReducerAT = sendMessageAType|updateMessageAT
+// export type sendMessageAType = {
+//     type:'SEND-MESSAGE'
+//     id: number;
+//     title: string;
+// }
+// export type updateMessageAT = {
+//     type: 'NEW-MESSAGE-BODY'
+//     body: string
+// }
+// export const sendMessageAC = (id:number, title:string):sendMessageAType => {
+//     return {type: 'SEND-MESSAGE', id, title}
+// }
+// export const updateMessageAC = (body:string):updateMessageAT => {
+//     return {type: 'NEW-MESSAGE-BODY', body}
+// }
+
 export default dialogReducer
