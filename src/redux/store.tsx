@@ -1,7 +1,7 @@
 import profileReducer, {addPostAC, changeNewTextAC} from "./profile-reducer";
 import dialogReducer, {newMessageBodyAC, sendMessageAC} from "./dialog-reducer";
 import friendsReducer from "./friends-reducer";
-import {followAC, setUsersAC, unFollowAC} from "./users-reducer";
+import {followAC, setPageAC, setPageAT, setTotalUsersCountAC, setUsersAC, unFollowAC} from "./users-reducer";
 export type ActionsTypesF =
     ReturnType<typeof newMessageBodyAC> |
     ReturnType<typeof sendMessageAC> |
@@ -9,7 +9,9 @@ export type ActionsTypesF =
     ReturnType<typeof changeNewTextAC>|
     ReturnType<typeof followAC>|
     ReturnType<typeof unFollowAC>|
-    ReturnType<typeof setUsersAC>
+    ReturnType<typeof setUsersAC>|
+    ReturnType<typeof setPageAC>|
+    ReturnType<typeof setTotalUsersCountAC>
 
 
 type messageType = {

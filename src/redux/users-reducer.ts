@@ -3,7 +3,7 @@ import {ActionsTypesF} from "./store";
 export type UsersType = {
     id:number;
     photoUrl:string
-    fullName:string;
+    name:string;
     status:string
     followed:boolean
     location:{
@@ -13,6 +13,9 @@ export type UsersType = {
 }
 export type InitialStateType = {
     users: UsersType[]
+    pageCount:number
+    totalUsersCount: number
+    currentPage: number
 }
 export type followAT = {
     type:'FOLLOW'
@@ -24,10 +27,21 @@ export type unfollowAT = {
 }
 export type setUserAT = {
     type:'SET-USERS'
-    user:UsersType[]
+    users:UsersType[]
+}
+export type setPageAT = {
+    type: 'SET-PAGE'
+    pageNumber: number
+}
+export type setTotalUsersCountAT = {
+    type: 'SET-TOTAL-USERS'
+    totalUsersCount:number
 }
 let initialState : InitialStateType = {
-    users: [] as UsersType[]
+    users: [] as UsersType[],
+    pageCount: 8,
+    totalUsersCount: 0,
+    currentPage: 2
 }
 
 const usersReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -43,7 +57,15 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionsTyp
             }
         case "SET-USERS":
             return {
-                ...state, users: [...state.users, ...action.user]
+                ...state, users:action.users
+            }
+        case 'SET-PAGE':
+            return {
+                ...state, currentPage:action.pageNumber
+            }
+        case "SET-TOTAL-USERS":
+            return {
+                ...state, totalUsersCount: action.totalUsersCount
             }
         default:
             return state;
@@ -61,10 +83,22 @@ export const unFollowAC = (userId:number):unfollowAT => {
         userId
     } as const
 }
-export const setUsersAC = (user:UsersType[]):setUserAT => {
+export const setUsersAC = (users:UsersType[]):setUserAT => {
     return{
         type:'SET-USERS',
-        user
+        users
+    } as const
+}
+export const setPageAC = (pageNumber:number):setPageAT =>{
+    return {
+        type:'SET-PAGE',
+        pageNumber
+    } as const
+}
+export const setTotalUsersCountAC = (totalUsersCount:number):setTotalUsersCountAT =>{
+    return {
+        type:'SET-TOTAL-USERS',
+        totalUsersCount
     } as const
 }
 
