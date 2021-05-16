@@ -1,5 +1,6 @@
-import {ActionsTypesF} from "./store";
+type ActionsTypesF = {
 
+}
 type sidebarType = {
     id: number;
     name: string;

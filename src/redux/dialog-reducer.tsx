@@ -1,4 +1,6 @@
-import {ActionsTypesF} from "./store";
+type ActionsTypesF =
+    ReturnType<typeof newMessageBodyAC> |
+    ReturnType<typeof sendMessageAC>
 
 export const UPDATE_NEW_MESSAGE_BODY = 'NEW-MESSAGE-BODY'
 export const SEND_MESSAGE = 'SEND-MESSAGE'

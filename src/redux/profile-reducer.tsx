@@ -1,5 +1,7 @@
 
-import {ActionsTypesF} from "./store";
+type ActionsTypesF =
+    ReturnType<typeof addPostAC> |
+    ReturnType<typeof changeNewTextAC>
 export const ADD_POST = 'ADD-POST'
 export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
 export const addPostAC = () => {

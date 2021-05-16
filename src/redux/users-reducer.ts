@@ -1,4 +1,11 @@
-import {ActionsTypesF} from "./store";
+type ActionsTypesF =
+    ReturnType<typeof follow>|
+    ReturnType<typeof unfollow>|
+    ReturnType<typeof setUser>|
+    ReturnType<typeof setCurrentPage>|
+    ReturnType<typeof setTotalUsersCount>|
+    ReturnType<typeof setToggleFetching>
+
 
 export type UsersType = {
     id:number;
@@ -16,6 +23,7 @@ export type InitialStateType = {
     pageCount:number
     totalUsersCount: number
     currentPage: number
+    isFetching: boolean
 }
 export type followAT = {
     type:'FOLLOW'
@@ -37,11 +45,16 @@ export type setTotalUsersCountAT = {
     type: 'SET-TOTAL-USERS'
     totalUsersCount:number
 }
+export type setToggleFetching = {
+    type: 'SET-TOGGLE-FETCHING'
+    isFetching: boolean
+}
 let initialState : InitialStateType = {
     users: [] as UsersType[],
     pageCount: 8,
     totalUsersCount: 0,
-    currentPage: 2
+    currentPage: 2,
+    isFetching: true
 }
 
 const usersReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -67,39 +80,49 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionsTyp
             return {
                 ...state, totalUsersCount: action.totalUsersCount
             }
+        case "SET-TOGGLE-FETCHING":
+            return {
+                ...state, isFetching:action.isFetching
+            }
         default:
             return state;
     }
 }
-export const followAC = (userId:number):followAT => {
+export const follow = (userId:number):followAT => {
     return {
         type:'FOLLOW',
         userId
     } as const
 }
-export const unFollowAC = (userId:number):unfollowAT => {
+export const unfollow = (userId:number):unfollowAT => {
     return {
         type:'UNFOLLOW',
         userId
     } as const
 }
-export const setUsersAC = (users:UsersType[]):setUserAT => {
+export const setUser = (users:UsersType[]):setUserAT => {
     return{
         type:'SET-USERS',
         users
     } as const
 }
-export const setPageAC = (pageNumber:number):setPageAT =>{
+export const setCurrentPage = (pageNumber:number):setPageAT =>{
     return {
         type:'SET-PAGE',
         pageNumber
     } as const
 }
-export const setTotalUsersCountAC = (totalUsersCount:number):setTotalUsersCountAT =>{
+export const setTotalUsersCount = (totalUsersCount:number):setTotalUsersCountAT =>{
     return {
         type:'SET-TOTAL-USERS',
         totalUsersCount
     } as const
+}
+export const setToggleFetching = (isFetching: boolean):setToggleFetching => {
+    return {
+        type: "SET-TOGGLE-FETCHING",
+        isFetching
+    }as const
 }
 
 export default usersReducer
