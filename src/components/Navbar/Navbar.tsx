@@ -30,13 +30,10 @@ const Navbar = () => {
                 <NavLink to='/friends' activeClassName={s.activeLink}>Friends</NavLink>
             </div>
             <span className={s.itemFriends}>
-                <NavLink to='/Abay' activeClassName={s.activeLink}> Abay </NavLink>
+                <NavLink to='/Abay' activeClassName={s.activeLink}> Aboy </NavLink>
             </span>
             <span className={s.itemFriends}>
                 <NavLink to='/Salta' activeClassName={s.activeLink}> Salta </NavLink>
-            </span>
-            <span className={s.itemFriends}>
-                <NavLink to='/Samal' activeClassName={s.activeLink}> Samal </NavLink>
             </span>
         </nav>
     );

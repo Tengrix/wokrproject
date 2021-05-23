@@ -1,5 +1,4 @@
 import React from 'react'
-import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
 import {
@@ -36,7 +35,7 @@ type MapDispatchToPropsType = {
 }
 
 export type UsersPropsType = MapStateToPropsType & MapDispatchToPropsType
-class UsersAPIComponent extends React.Component<UsersPropsType, any> {
+class UsersAPIComponent extends React.Component<UsersPropsType, UsersPropsType> {
     componentDidMount() {
         this.props.setToggleFetching(true)
         axios.get<GetUsersType>(`https://social-network.samuraijs.com/api/1.0/users?page=${this.props.currentPage}&count=${this.props.pageCount}`).then(response => {
@@ -81,30 +80,6 @@ let mapStateToProps = (state:AppStateType) :MapStateToPropsType => {
         isFetching: state.usersPage.isFetching
     }
 }
-
-// let mapDispatchToProps = (dispatch:Dispatch) : MapDispatchToPropsType => {
-//     return {
-//         follow: (userId:number) => {
-//             dispatch(followAC(userId))
-//         },
-//         unfollow: (userId:number) => {
-//             dispatch(unFollowAC(userId))
-//         },
-//         setUser: (users:UsersType[]) => {
-//             dispatch(setUsersAC(users))
-//         },
-//         setCurrentPage:(pageNumber:number) =>{
-//             dispatch(setCurrentPageAC(pageNumber))
-//         },
-//         setTotalUsersCount:(totalCount:number) =>{
-//             dispatch(setTotalUsersCountAC(totalCount))
-//         },
-//         setToggleFetching:(isFetching:boolean) =>{
-//             dispatch(setToggleFetchingAC(isFetching))
-//         }
-//     }
-// }
-
 const UsersContainer = connect(mapStateToProps, { follow,unfollow, setUser, setCurrentPage, setTotalUsersCount, setToggleFetching })(UsersAPIComponent);
 
 export default UsersContainer
