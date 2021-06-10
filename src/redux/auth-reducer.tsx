@@ -1,9 +1,12 @@
+import {Dispatch} from "redux";
+import {authAPI, usersAPI} from "../api/api";
+
 type ActionsTypesF =
     ReturnType<typeof setAuthUserData>|
     ReturnType<typeof setToggleFetching>
 
 export type setUserDataType = {
-    userId: number | null,
+    id: number | null,
     email: string | null,
     login: string | null
 }
@@ -20,15 +23,19 @@ export type InitialStateType = {
     data: setUserDataType
     isFetching: boolean;
     isAuth: boolean;
+    resultCode: number;
+    messages: string[];
 }
 let initialState: InitialStateType = {
     data:{
+        id:null,
         email:null,
-        login:null,
-        userId: null
+        login: null
     },
     isFetching: false,
-    isAuth: false
+    isAuth: false,
+    resultCode: 0,
+    messages: ['']
 }
 
 export const authReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -48,10 +55,10 @@ export const authReducer = (state: InitialStateType = initialState, action: Acti
             return state
     }
 }
-export const setAuthUserData = ( userId: number|null, email: string|null, login: string|null) : setUserDataTypeAT  => {
+export const setAuthUserData = ( id: number|null, email: string|null, login: string|null) : setUserDataTypeAT  => {
     return {
         type: 'SET-USER-DATA',
-        data:{userId, login, email}
+        data:{id, email, login}
     } as const
 }
 export const setToggleFetching = (isFetching: boolean):setToggleFetching => {
@@ -60,4 +67,18 @@ export const setToggleFetching = (isFetching: boolean):setToggleFetching => {
         isFetching
     }as const
 }
+
+export const FollowOrUnfollow = () => {
+    return (dispatch: Dispatch) => {
+        authAPI.getAuthMe().then(response=> {
+            dispatch(setToggleFetching(false))
+            if(response.resultCode===0){
+                let {id,login,email} = response.data
+                dispatch(setAuthUserData(id,login,email))
+                dispatch(setToggleFetching(true))
+            }
+        })
+    }
+}
+
 export default authReducer

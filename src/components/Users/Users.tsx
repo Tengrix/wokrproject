@@ -5,7 +5,7 @@ import {UsersPropsType} from "./UsersContainer";
 type onPageChangedType = {
     onPageChanged: (page: number) => void
 }
-type UsersPresentPropsType = UsersPropsType & onPageChangedType
+export type UsersPresentPropsType = UsersPropsType & onPageChangedType
 let Users = (props: UsersPresentPropsType) => {
     let pagesCount = Math.ceil(props.totalUsersCount / props.pageCount)
     let pages = []
@@ -31,12 +31,14 @@ let Users = (props: UsersPresentPropsType) => {
 
                         </div>
                         <div>
-                            {el.followed ? <button onClick={() => {
-                                    props.follow(el.id)
-                                }}>follow</button> :
-                                <button onClick={() => {
-                                    props.unfollow(el.id)
+
+                            {el.followed ?
+                                <button disabled={props.isFollowing.some(id=> id==el.id)} onClick={() => {
+                                    props.UnFollowFriend(el.id )
                                 }}>unfollow</button>
+                                : <button disabled={props.isFollowing.some(id=> id==el.id)} onClick={() => {
+                                    props.FollowFriend(el.id)
+                                }}>follow</button>
                             }
                         </div>
                     </span>
@@ -44,12 +46,7 @@ let Users = (props: UsersPresentPropsType) => {
                             <span>
                                 <div>{el.name}</div>
                                 <div>{el.status}</div>
-
                             </span>
-                        <span>
-                            <div>{'el.location.country'}</div>
-                            <div>{'el.location.city'}</div>
-                        </span>
                     </span>
             </div>)
         }

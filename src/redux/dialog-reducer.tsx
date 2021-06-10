@@ -1,6 +1,6 @@
 type ActionsTypesF =
-    ReturnType<typeof newMessageBodyAC> |
-    ReturnType<typeof sendMessageAC>
+    ReturnType<typeof updatedMessageBody> |
+    ReturnType<typeof sendMessage>
 
 export const UPDATE_NEW_MESSAGE_BODY = 'NEW-MESSAGE-BODY'
 export const SEND_MESSAGE = 'SEND-MESSAGE'
@@ -56,14 +56,14 @@ export const dialogReducer = (state: InitialStateType = initialState, action: Ac
             return state
     }
 }
-export const newMessageBodyAC= (body: string) => {
+export const updatedMessageBody= (body: string) => {
     return {
         type: UPDATE_NEW_MESSAGE_BODY,
         body: body
     } as const
 
 }
-export const sendMessageAC = () => {
+export const sendMessage = () => {
     return {
         type: SEND_MESSAGE
     } as const

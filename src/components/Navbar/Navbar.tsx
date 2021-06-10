@@ -32,9 +32,7 @@ const Navbar = () => {
             <span className={s.itemFriends}>
                 <NavLink to='/Abay' activeClassName={s.activeLink}> Aboy </NavLink>
             </span>
-            <span className={s.itemFriends}>
-                <NavLink to='/Salta' activeClassName={s.activeLink}> Salta </NavLink>
-            </span>
+
         </nav>
     );
 }

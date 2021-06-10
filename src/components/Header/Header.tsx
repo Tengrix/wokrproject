@@ -2,7 +2,6 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import s from './Header.module.css';
 import {HeaderContainerTypeProps} from "./HeaderContainer";
-import Preloader from "../common/Preloader/Preloader";
 
 function Header(props:HeaderContainerTypeProps) {
   return (

@@ -2,9 +2,11 @@ import React from 'react'
 import s from './ProfileInfo.module.css'
 import {ProfileType} from "../../../redux/profile-reducer";
 import Preloader from "../../common/Preloader/Preloader";
+import ProfileStatus from './ProfileStatus'
 type ProfileInfoType = {
-    pic:string;
     profile:ProfileType
+    status: string;
+    updateProfileStatus: (status:string) => void;
 }
 
 function ProfileInfo(props:ProfileInfoType){
@@ -14,15 +16,18 @@ function ProfileInfo(props:ProfileInfoType){
     return (
         <div>
 
-            <div>
-                <img
-                    src={props.pic}/>
-            </div>
+            {/*<div>*/}
+            {/*    <img src={props.pic}/>*/}
+            {/*</div>*/}
             <div className={s.descriptionBlock}>
                 <p>
                     {props.profile.fullName}
                 </p>
-                <img src={props.profile.photos.small} alt=""/>
+                <div>
+                    <img src={props.profile.photos.small} alt=""/>
+                    <ProfileStatus status={props.status} updateProfileStatus={props.updateProfileStatus} />
+                </div>
+
                 <span> Я будущий спец в IT-INDUSTRY</span>
                 <div>
                     <div>{props.profile.contacts.vk} </div>

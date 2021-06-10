@@ -1,7 +1,11 @@
+import {Dispatch} from "redux";
+import {profileAPI, usersAPI} from "../api/api";
+
 type ActionsTypesF =
     ReturnType<typeof addPost> |
     ReturnType<typeof changeNewText>|
-    ReturnType<typeof setProfile>
+    ReturnType<typeof setProfile>|
+    ReturnType<typeof setStatus>
 
 export const ADD_POST = 'ADD-POST'
 export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
@@ -15,6 +19,21 @@ export type messageType = {
 type ProfilePhotoType = {
     small:string
     large:string
+}
+type addPostType = {
+    type: 'ADD-POST'
+}
+type changeNewText = {
+    type: 'CHANGE-NEW-POST-TEXT'
+    newPost: string
+}
+type setProfile = {
+    type: 'SET-PROFILE'
+    profile:ProfileType
+}
+type setStatus = {
+    type: 'SET-STATUS'
+    status: string
 }
 
 export type ProfileType = {
@@ -38,7 +57,8 @@ export type ProfileType = {
 export type InitialStateType = {
     message: messageType[];
     newPostText: string;
-    profile: ProfileType | null
+    profile: ProfileType | null;
+    status:string;
 }
 
 let initialState : InitialStateType = {
@@ -48,7 +68,8 @@ let initialState : InitialStateType = {
 
     ]as messageType[] ,
     newPostText: '',
-    profile:null
+    profile: null,
+    status:''
 }
 
 export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -75,26 +96,59 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             return {
                 ...state, profile: action.profile
             }
+        case "SET-STATUS":
+            return {
+                ...state, status: action.status
+            }
         default:
             return state;
     }
 }
-export const addPost = () => {
+export const addPost = ():addPostType => {
     return {
         type: ADD_POST,
     } as const
 }
-export const changeNewText = (newPost: string) => {
+export const changeNewText = (newPost: string):changeNewText => {
     return {
         type: CHANGE_NEW_POST_TEXT,
         newPost
     } as const
 }
-export const setProfile = (profile:ProfileType) => {
+export const setProfile = (profile:ProfileType):setProfile => {
     return {
         type: 'SET-PROFILE',
         profile
     } as const
 }
+export const setStatus = (status:string):setStatus => {
+    return{
+        type: 'SET-STATUS',
+        status
+    } as const
+}
+export const GetProfile=(userId:number)=>{
+    return (dispatch:Dispatch) =>{
+        usersAPI.getProfile(userId).then(response=>{
+           dispatch(setProfile(response.data))
+        })
+    }
+}
+export const getProfileStatus = (userId:number) => {
+    return (dispatch:Dispatch) => {
+        profileAPI.getStatus(userId).then(response => {
+            dispatch(setStatus(response.data))
+        })
+    }
+}
+export const updateProfileStatus = (status:string) => {
+    return (dispatch:Dispatch) => {
+        profileAPI.updateStatus(status).then(response => {
+            if(response.data.resultCode===0){
+                dispatch(setStatus(status))
+            }
 
+        })
+    }
+}
 export default profileReducer

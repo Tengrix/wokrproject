@@ -1,11 +1,19 @@
+import {usersAPI} from "../api/api";
+import {Dispatch} from "redux";
+
 type ActionsTypesF =
     ReturnType<typeof follow>|
     ReturnType<typeof unfollow>|
     ReturnType<typeof setUser>|
     ReturnType<typeof setCurrentPage>|
     ReturnType<typeof setTotalUsersCount>|
-    ReturnType<typeof setToggleFetching>
+    ReturnType<typeof setToggleFetching>|
+    ReturnType<typeof setToggleFollowing>
 
+export type UsersPhotoType = {
+    small: string;
+    large: string;
+}
 
 export type UsersType = {
     id:number;
@@ -13,10 +21,7 @@ export type UsersType = {
     name:string;
     status:string
     followed:boolean
-    location:{
-        city:string,
-        country:string
-    }
+    photos:UsersPhotoType;
 }
 export type InitialStateType = {
     users: UsersType[]
@@ -24,6 +29,7 @@ export type InitialStateType = {
     totalUsersCount: number
     currentPage: number
     isFetching: boolean
+    isFollowing: number[]
 }
 export type followAT = {
     type:'FOLLOW'
@@ -49,12 +55,18 @@ export type setToggleFetching = {
     type: 'SET-TOGGLE-FETCHING'
     isFetching: boolean
 }
+export type setToggleFollowing = {
+    type: 'SET-TOGGLE-FOLLOWING'
+    id:number
+    isFetching: boolean;
+}
 let initialState : InitialStateType = {
     users: [] as UsersType[],
-    pageCount: 5,
+    pageCount: 10,
     totalUsersCount: 0,
     currentPage: 1,
-    isFetching: true
+    isFetching: true,
+    isFollowing: []
 }
 
 const usersReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -62,11 +74,11 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionsTyp
         case 'FOLLOW':
             return {
                 ...state,
-                users: state.users.map(el => el.id === action.userId ? {...el, followed:false}:el)}
+                users: state.users.map(el => el.id === action.userId ? {...el, followed:true}:el)}
         case 'UNFOLLOW':
             return {
                 ...state,
-                users: state.users.map(el => el.id === action.userId ? {...el, followed:true}:el)
+                users: state.users.map(el => el.id === action.userId ? {...el, followed:false}:el)
             }
         case "SET-USERS":
             return {
@@ -83,6 +95,12 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionsTyp
         case "SET-TOGGLE-FETCHING":
             return {
                 ...state, isFetching:action.isFetching
+            }
+        case "SET-TOGGLE-FOLLOWING":
+            return {
+                ...state,
+                isFollowing: action.isFetching?[...state.isFollowing, action.id]:
+                    state.isFollowing.filter(el=> el!=action.id)
             }
         default:
             return state;
@@ -124,5 +142,45 @@ export const setToggleFetching = (isFetching: boolean):setToggleFetching => {
         isFetching
     }as const
 }
+export const setToggleFollowing = (isFetching:boolean, id:number): setToggleFollowing => {
+    return{
+        type: 'SET-TOGGLE-FOLLOWING',
+        id,
+        isFetching
+    } as const
+}
 
+export const getUser = (currentPage:number, pageCount:number) => {
+    return (dispatch:Dispatch) => {
+        dispatch(setToggleFetching(true));
+        usersAPI.getUsers(currentPage,pageCount).then(response => {
+            dispatch(setToggleFetching(false))
+            dispatch(setUser(response.items))
+            dispatch(setTotalUsersCount(response.totalCount))
+        })
+    }
+}
+
+export const FollowFriend = (userId:number) => {
+    return (dispatch: Dispatch) => {
+        dispatch(setToggleFollowing(true,userId))
+        usersAPI.FollowFriends(userId).then(response => {
+            if (response.resultCode == 0) {
+               dispatch( follow(userId))
+            }
+            dispatch(setToggleFollowing(false, userId))
+        })
+    }
+}
+export const UnFollowFriend = (userId:number) => {
+    return (dispatch: Dispatch) => {
+        dispatch(setToggleFollowing(true,userId))
+        usersAPI.UnFollowFriends(userId).then(response => {
+            if (response.resultCode === 0) {
+                dispatch(unfollow(userId))
+            }
+            dispatch(setToggleFollowing(false, userId))
+        })
+    }
+}
 export default usersReducer
