@@ -3,12 +3,10 @@ import {profileAPI, usersAPI} from "../api/api";
 
 type ActionsTypesF =
     ReturnType<typeof addPost> |
-    ReturnType<typeof changeNewText>|
     ReturnType<typeof setProfile>|
     ReturnType<typeof setStatus>
 
 export const ADD_POST = 'ADD-POST'
-export const CHANGE_NEW_POST_TEXT = 'CHANGE-NEW-POST-TEXT'
 
 export type messageType = {
     message: string;
@@ -22,10 +20,7 @@ type ProfilePhotoType = {
 }
 type addPostType = {
     type: 'ADD-POST'
-}
-type changeNewText = {
-    type: 'CHANGE-NEW-POST-TEXT'
-    newPost: string
+    posts:string
 }
 type setProfile = {
     type: 'SET-PROFILE'
@@ -56,7 +51,6 @@ export type ProfileType = {
 
 export type InitialStateType = {
     message: messageType[];
-    newPostText: string;
     profile: ProfileType | null;
     status:string;
 }
@@ -67,7 +61,6 @@ let initialState : InitialStateType = {
         {id: 2, message: 'It is my first post', likeCount: 11},
 
     ]as messageType[] ,
-    newPostText: '',
     profile: null,
     status:''
 }
@@ -77,20 +70,13 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
         case ADD_POST:{
             const newPost: messageType = {
                 id: 3,
-                message: state.newPostText,
+                message: action.posts,
                 likeCount: 0
             };
             return {
                 ...state,
                 message: [...state.message, newPost],
-                newPostText: ''
             };
-        }
-        case CHANGE_NEW_POST_TEXT:{
-            return{
-                ...state,
-                newPostText:action.newPost
-            }
         }
         case "SET-PROFILE":
             return {
@@ -104,15 +90,10 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             return state;
     }
 }
-export const addPost = ():addPostType => {
+export const addPost = (posts:string):addPostType => {
     return {
         type: ADD_POST,
-    } as const
-}
-export const changeNewText = (newPost: string):changeNewText => {
-    return {
-        type: CHANGE_NEW_POST_TEXT,
-        newPost
+        posts
     } as const
 }
 export const setProfile = (profile:ProfileType):setProfile => {

@@ -5,6 +5,7 @@ import friendsReducer from "./friends-reducer";
 import usersReducer from "./users-reducer";
 import authReducer from "./auth-reducer";
 import thunkMiddleware from 'redux-thunk'
+import {reducer as formReducer} from 'redux-form'
 declare global {
     interface Window {store: any}
 }
@@ -14,7 +15,8 @@ let rootReducer = combineReducers({
     dialogPage: dialogReducer,
     sideBarPage: friendsReducer,
     usersPage: usersReducer,
-    auth: authReducer
+    auth: authReducer,
+    form: formReducer
 })
 
 export type AppStateType =ReturnType<typeof rootReducer>

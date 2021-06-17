@@ -9,7 +9,7 @@ type MapStateToPropsType2 = {
 
 let mapStateToPropsForRedirect = (state:AppStateType) :MapStateToPropsType2 =>{
     return {
-        isAuth: state.auth.isAuth
+        isAuth: state.auth.data.isAuth
     }
 }
 export function withAuthRedirectComponent <T>(Component: ComponentType<T>) {

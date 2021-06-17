@@ -2,17 +2,15 @@ import React from 'react';
 import MyPosts from "./MyPosts";
 import {connect} from "react-redux";
 import {AppStateType} from "../../../redux/redux-store";
-import {addPost, changeNewText, messageType} from "../../../redux/profile-reducer";
+import {addPost, messageType} from "../../../redux/profile-reducer";
 import {Dispatch} from "redux";
 
 type MapStateToPropsType = {
     message: messageType[];
-    newPostText: string;
 }
 
 type MapDispatchToPropsType = {
-    changeNewText: (text: string) => void;
-    addPost:() => void;
+    addPost:(posts:string) => void;
 }
 
 export type ProfilePropsType = MapStateToPropsType & MapDispatchToPropsType
@@ -20,17 +18,12 @@ export type ProfilePropsType = MapStateToPropsType & MapDispatchToPropsType
 const mapStateToProps = (state:AppStateType): MapStateToPropsType => {
     return{
         message: state.profilePage.message,
-        newPostText: state.profilePage.newPostText
-
     }
 }
 const mapDispatchToProps = (dispatch:Dispatch) :MapDispatchToPropsType => {
     return{
-        changeNewText: (text:string) => {
-            dispatch(changeNewText(text))
-        },
-        addPost: () => {
-            dispatch(addPost())
+        addPost: (posts:string) => {
+            dispatch(addPost(posts))
         }
     }
 }

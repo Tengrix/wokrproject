@@ -23,6 +23,18 @@ type GetAuthType = {
     messages: string[];
     fieldsErrors: string[];
 }
+type PostAuthType = {
+    email: string;
+    password:string;
+    rememberMe: boolean;
+    captcha:boolean;
+}
+type PostAuthLoginType = {
+    resultCode: string;
+    messages: string[];
+    fieldsError: string[];
+    data: PostAuthType
+}
 
 const instance = axios.create({
     baseURL:'https://social-network.samuraijs.com/api/1.0/',
@@ -52,7 +64,16 @@ export const usersAPI = {
 export const authAPI = {
     getAuthMe (){
         return instance.get<GetAuthType>(`auth/me`).then(response=>response.data)
-    }
+    },
+    getLogin(email:string, password:string,rememberMe:boolean){
+        return instance.post<CommonResponseType<{ data: PostAuthLoginType }>>('auth/login', {email, password, rememberMe});
+    },
+    getLogOut(){
+        return instance.delete<CommonResponseType<{}>>('auth/login')
+    },
+    // getCaptcha(url:string){
+    //     return instance.get('security/get-captcha-url')
+    // }
 }
 
 export const profileAPI = {

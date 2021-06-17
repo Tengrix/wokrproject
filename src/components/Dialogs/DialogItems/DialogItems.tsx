@@ -11,7 +11,7 @@ function DialogItems(props:DialogItemsTypes) {
 
     return (
         <div>
-            <div className={`${s.dialog} ${s.active}`}>
+            <div className={`${s.active}`}>
                 <img className={s.img} src="https://media.vanityfair.com/photos/5c5325d3cec32271820c6fc1/master/w_1600%2Cc_limit/ava-max-interview.jpg" alt=""/>
                 <NavLink to={'/dialogs/'+props.id}>{props.name}</NavLink>
             </div>

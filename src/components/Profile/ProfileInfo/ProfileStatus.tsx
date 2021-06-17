@@ -11,8 +11,9 @@ function ProfileStatus(props: ProfileStatusPropsType) {
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.status);
     useEffect(() =>{
-         dispatch(updateProfileStatus)
-    },[title])
+        console.log('qwe')
+         dispatch(updateProfileStatus(title))
+    },[props.status])
     const activateEditMode = () => {
         setEditMode(true);
         setTitle(props.status);
@@ -30,7 +31,7 @@ function ProfileStatus(props: ProfileStatusPropsType) {
         <div>
             {!editMode ?
                 <div>
-                    <span onDoubleClick={activateEditMode}>{props.status}</span>
+                    <span onDoubleClick={activateEditMode}>{props.status || 'no status'}</span>
                 </div>
                 :
                 <div>
