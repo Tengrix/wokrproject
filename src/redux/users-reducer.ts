@@ -153,6 +153,7 @@ export const setToggleFollowing = (isFetching:boolean, id:number): setToggleFoll
 export const getUser = (currentPage:number, pageCount:number) => {
     return (dispatch:Dispatch) => {
         dispatch(setToggleFetching(true));
+        dispatch(setCurrentPage(currentPage))
         usersAPI.getUsers(currentPage,pageCount).then(response => {
             dispatch(setToggleFetching(false))
             dispatch(setUser(response.items))

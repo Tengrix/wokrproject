@@ -11,7 +11,14 @@ import Preloader from "../common/Preloader/Preloader";
 import {compose} from "redux";
 import {withRouter} from "react-router";
 import {withAuthRedirectComponent} from "../../hoc/WithAuthRedirectComponent";
-import {GetProfile} from "../../redux/profile-reducer";
+import {
+    getCurrentPage,
+    getIsFetching,
+    getIsFollowing,
+    getPageSize,
+    getTotalUsersCount,
+    getUsers
+} from "./users-selectors";
 
 export type MapStateToPropsType = {
     users: UsersType[];
@@ -58,12 +65,12 @@ class UsersAPIComponent extends React.Component<UsersPropsType, UsersPropsType> 
 
 let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
     return {
-        users: state.usersPage.users,
-        pageCount: state.usersPage.pageCount,
-        totalUsersCount: state.usersPage.totalUsersCount,
-        currentPage: state.usersPage.currentPage,
-        isFetching: state.usersPage.isFetching,
-        isFollowing: state.usersPage.isFollowing
+        users:getUsers(state),
+        pageCount: getPageSize(state),
+        totalUsersCount: getTotalUsersCount(state),
+        currentPage: getCurrentPage(state),
+        isFetching: getIsFetching(state),
+        isFollowing: getIsFollowing(state)
     }
 }
 export default compose<React.ComponentType>(

@@ -5,6 +5,7 @@ import {AppStateType} from "../../redux/redux-store";
 import {GetProfile, getProfileStatus, ProfileType, updateProfileStatus} from "../../redux/profile-reducer";
 import {compose} from 'redux'
 import {withRouter} from "react-router";
+import {Redirect} from "react-router-dom";
 
 type MapStateToPropsType = {
     profile: ProfileType | null;
@@ -23,7 +24,6 @@ class ProfileContainer extends React.Component <any, any> {
     componentDidMount() {
         let userId = this.props.match.params.userId
         if (!userId) {
-            debugger
             userId = this.props.authorizedUserId;
         }
         this.props.GetProfile(userId)

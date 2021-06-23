@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Navbar from './components/Navbar/Navbar'
 import './App.css';
 import {BrowserRouter, Route} from 'react-router-dom'
@@ -11,9 +11,27 @@ import UsersContainer from "./components/Users/UsersContainer";
 import ProfileContainer from "./components/Profile/ProfileContainer";
 import HeaderContainer from "./components/Header/HeaderContainer";
 import LoginForm from "./components/Login/LoginForm";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "./redux/redux-store";
+import {initializeAppTC} from "./redux/app-reducer";
+import {CircularProgress} from "@material-ui/core";
 
 
 function App() {
+    const dispatch = useDispatch()
+    const isLogged = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
+
+    useEffect(() => {
+        dispatch(initializeAppTC())
+    },[])
+
+    if (!isLogged) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
+
     return (
         <BrowserRouter>
             <div className="app-wrapper">

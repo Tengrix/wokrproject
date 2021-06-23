@@ -10,7 +10,7 @@ export type setUserDataType = {
         id: number | null,
     email: string | null,
     login: string | null,
-    isAuth:boolean
+    isAuth:boolean;
 }
 export type setToggleFetching = {
     type: 'SET-TOGGLE-FETCHING'
