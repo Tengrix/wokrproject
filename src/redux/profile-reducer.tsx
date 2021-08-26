@@ -4,8 +4,8 @@ import {profileAPI, usersAPI} from "../api/api";
 type ActionsTypesF =
     ReturnType<typeof addPost> |
     ReturnType<typeof setProfile>|
-    ReturnType<typeof setStatus>
-
+    ReturnType<typeof setStatus>|
+    ReturnType<typeof deletePost>
 export const ADD_POST = 'ADD-POST'
 
 export type messageType = {
@@ -86,6 +86,10 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             return {
                 ...state, status: action.status
             }
+        case "DEL-POST":
+            return {
+                ...state, message:state.message.filter(el=>el.id !== action.id)
+            }
         default:
             return state;
     }
@@ -108,28 +112,30 @@ export const setStatus = (status:string):setStatus => {
         status
     } as const
 }
+export const deletePost = (id:number) => {
+    return{
+        type: 'DEL-POST',
+        id
+    } as const
+}
 export const GetProfile=(userId:number)=>{
-    return (dispatch:Dispatch) =>{
-        usersAPI.getProfile(userId).then(response=>{
+    return async (dispatch:Dispatch) =>{
+        const response = await usersAPI.getProfile(userId)
            dispatch(setProfile(response.data))
-        })
     }
 }
 export const getProfileStatus = (userId:number) => {
-    return (dispatch:Dispatch) => {
-        profileAPI.getStatus(userId).then(response => {
+    return async (dispatch:Dispatch) => {
+        const response = await profileAPI.getStatus(userId)
             dispatch(setStatus(response.data))
-        })
     }
 }
 export const updateProfileStatus = (status:string) => {
-    return (dispatch:Dispatch) => {
-        profileAPI.updateStatus(status).then(response => {
+    return async (dispatch:Dispatch) => {
+        const response = await profileAPI.updateStatus(status)
             if(response.data.resultCode===0){
                 dispatch(setStatus(status))
             }
-
-        })
     }
 }
 export default profileReducer

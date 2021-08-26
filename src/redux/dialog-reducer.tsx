@@ -36,10 +36,9 @@ let initialState: InitialStateType = {
 export const dialogReducer = (state: InitialStateType = initialState, action: ActionsTypesF):InitialStateType => {
     switch (action.type){
         case SEND_MESSAGE:
-            let body = action.dialog
             return {
                 ...state,
-                messages: [...state.messages, {id:6, messages: body} ]
+                messages: [...state.messages, {id:6, messages: action.dialog} ]
             }
         default:
             return state

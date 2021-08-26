@@ -3,7 +3,7 @@ import Header from "./Header";
 import {connect} from "react-redux";
 import {
     AuthLogOut,
-    FollowOrUnfollow,
+    AuthMe,
     setAuthUserData,
     setToggleFetching,
     setUserDataType
@@ -17,13 +17,13 @@ type mapStateToPropsType = {
 type mapDispatchToProps = {
     setAuthUserData: (data: setUserDataType) => void;
     setToggleFetching: (isFetching: boolean) => void;
-    FollowOrUnfollow:() => void;
+    AuthMe:() => void;
     AuthLogOut:() => number;
 }
 export type HeaderContainerTypeProps = mapStateToPropsType & mapDispatchToProps
 class HeaderContainer extends React.Component<any, any>{
     componentDidMount() {
-        this.props.FollowOrUnfollow()
+        this.props.AuthMe()
     }
 
     render() {
@@ -32,7 +32,7 @@ class HeaderContainer extends React.Component<any, any>{
                        isAuth={this.props.isAuth}
                        setAuthUserData={this.props.setAuthUserData}
                        setToggleFetching={this.props.setToggleFetching}
-                       FollowOrUnfollow={this.props.FollowOrUnfollow}
+                       AuthMe={this.props.AuthMe}
                        AuthLogOut={this.props.AuthLogOut}
         />
     }
@@ -43,4 +43,4 @@ let mapStateToProps = (state:AppStateType): mapStateToPropsType => {
         login: state.auth.data.login,
     }
 }
-export default connect(mapStateToProps,{setAuthUserData,setToggleFetching,FollowOrUnfollow,AuthLogOut}) (HeaderContainer)
+export default connect(mapStateToProps,{setAuthUserData,setToggleFetching,AuthMe,AuthLogOut}) (HeaderContainer)

@@ -33,7 +33,7 @@ function App() {
     }
 
     return (
-        <BrowserRouter>
+
             <div className="app-wrapper">
                 <HeaderContainer/>
                 <Navbar/>
@@ -48,7 +48,6 @@ function App() {
                     <Route path='/login' render={() => <LoginForm/>}/>
                 </div>
             </div>
-        </BrowserRouter>
     );
 }
 

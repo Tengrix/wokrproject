@@ -1,54 +1,30 @@
 import React from 'react'
-import s from "./UsersApiComponent.module.css";
 import {UsersPropsType} from "./UsersContainer";
+import Pagination from "../common/Paginator/Pagination";
+import User from "./User";
 
-type onPageChangedType = {
+type onPageChangeType = {
     onPageChanged: (page: number) => void
 }
-export type UsersPresentPropsType = UsersPropsType & onPageChangedType
-let Users = (props: UsersPresentPropsType) => {
-    let pagesCount = Math.ceil(props.totalUsersCount / props.pageCount)
-    let pages = []
-    for (let i = 1; i <= pagesCount; i++) {
-        pages.push(i)
-    }
+type UsersType = UsersPropsType & onPageChangeType
+let Users = (props: UsersType) => {
+
     return <div>
-        <div>
-            {pages.map(el => {
-                return <span className={props.currentPage === el ? s.selectedPage : ''}
-                             onClick={() => props.onPageChanged(el)}>{el}</span>
-            })}
-
-        </div>
+        <Pagination
+            currentPage={props.currentPage}
+            pageCount={props.pageCount}
+            totalUsersCount={props.totalUsersCount}
+            onPageChanged={props.onPageChanged}
+        />
         {
-            props.users.map(el => <div key={el.id}>
-                    <span>
-                        <div>
-
-                            <img className={s.img}
-                                 src={el.photoUrl != null ? el.photoUrl : 'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png'}
-                                 alt=""/>
-
-                        </div>
-                        <div>
-
-                            {el.followed ?
-                                <button disabled={props.isFollowing.some(id=> id==el.id)} onClick={() => {
-                                    props.UnFollowFriend(el.id )
-                                }}>unfollow</button>
-                                : <button disabled={props.isFollowing.some(id=> id==el.id)} onClick={() => {
-                                    props.FollowFriend(el.id)
-                                }}>follow</button>
-                            }
-                        </div>
-                    </span>
-                <span>
-                            <span>
-                                <div>{el.name}</div>
-                                <div>{el.status}</div>
-                            </span>
-                    </span>
-            </div>)
+            props.users.map(el =>  <User
+                key={el.id}
+                user={el}
+                FollowFriend={props.FollowFriend}
+                UnFollowFriend={props.UnFollowFriend}
+                isFollowing={props.isFollowing}
+                />
+            )
         }
     </div>
 }

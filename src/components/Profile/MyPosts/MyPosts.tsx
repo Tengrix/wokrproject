@@ -8,13 +8,15 @@ import { maxLengthCreator, requiredField} from "../../utils/validators/validator
 import {TextArea} from "../../common/FormController/FormController";
 let maxLength = maxLengthCreator(99)
 
-function MyPosts(props: ProfilePropsType) {
+const MyPosts = React.memo((props: ProfilePropsType) => {
 
     let messageData = props.message.map(el => <Posts message={el.message} like={el.likeCount}/>)
     let addPost = (value:any) => {
         props.addPost(value.posts)
     }
+    console.log('ds')
     return (
+
         <div className={s.postsBLock}>
             <h3>My posts</h3>
             <div>
@@ -25,7 +27,7 @@ function MyPosts(props: ProfilePropsType) {
             </div>
         </div>
     );
-}
+});
 
 const PostForm: React.FC<InjectedFormProps<string>> = (props) => {
     return (

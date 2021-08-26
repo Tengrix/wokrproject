@@ -5,7 +5,6 @@ import {AppStateType} from "../../redux/redux-store";
 import {GetProfile, getProfileStatus, ProfileType, updateProfileStatus} from "../../redux/profile-reducer";
 import {compose} from 'redux'
 import {withRouter} from "react-router";
-import {Redirect} from "react-router-dom";
 
 type MapStateToPropsType = {
     profile: ProfileType | null;

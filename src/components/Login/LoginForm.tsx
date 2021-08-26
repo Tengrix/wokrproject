@@ -21,9 +21,9 @@ type LoginType = {
 }
 let maxLength = maxLengthCreator(30)
 
-const LoginForm : React.FC<InjectedFormProps<FormDataType>> = (props) => {
+const LoginForm : React.FC<InjectedFormProps<FormDataType>> = ({handleSubmit,error}) => {
     return (
-        <form action="" onSubmit={props.handleSubmit}>
+        <form action="" onSubmit={handleSubmit}>
             <div>
                 <Field component={InputArea} name={'login'} type="text" placeholder={'login'}
                     validate={[requiredField,maxLength]}
@@ -38,8 +38,8 @@ const LoginForm : React.FC<InjectedFormProps<FormDataType>> = (props) => {
                 <Field component={'input'} name={'rememberMe'} type="checkbox" placeholder={'rememberMe'}/>
             </div>
             <div>
-                {props.error?<div className={s.formSummaryError}>
-                    {props.error}
+                {error?<div className={s.formSummaryError}>
+                    {error}
                 </div>:''}
                 <button>
                     Login
@@ -60,8 +60,6 @@ const Login = (props:LoginType) => {
     }
     if(props.isAuth){
         return <Redirect to={'profile'}/>
-    }else{
-
     }
     return(
         <div>

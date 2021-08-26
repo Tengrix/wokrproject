@@ -11,7 +11,6 @@ function ProfileStatus(props: ProfileStatusPropsType) {
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.status);
     useEffect(() =>{
-        console.log('qwe')
          dispatch(updateProfileStatus(title))
     },[props.status])
     const activateEditMode = () => {

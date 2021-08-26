@@ -9,8 +9,8 @@ type setMessageType = {
 function Message(props: setMessageType) {
     return (
         <div>
-            <div className={s.message}>
-                <div className={s.chat}>
+            <div>
+                <div>
                     {props.messages}
                 </div>
             </div>

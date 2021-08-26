@@ -11,14 +11,13 @@ type ProfilePropsType = {
 }
 type MainProfilePropsType = ProfilePropsType & ProfileContainerPropsType
 
-function Profile(props: MainProfilePropsType) {
+function Profile({profile,status,updateProfileStatus}: MainProfilePropsType) {
     return (
         <div>
             <ProfileInfo
-                profile={props.profile}
-                // pic={'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&h=350'}
-                status={props.status}
-                updateProfileStatus={props.updateProfileStatus}
+                profile={profile}
+                status={status}
+                updateProfileStatus={updateProfileStatus}
             />
             <MyPostsContainer/>
         </div>
