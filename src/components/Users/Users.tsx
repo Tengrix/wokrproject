@@ -13,8 +13,9 @@ let Users = (props: UsersType) => {
         <Pagination
             currentPage={props.currentPage}
             pageCount={props.pageCount}
-            totalUsersCount={props.totalUsersCount}
+            totalItemsCount={props.totalUsersCount}
             onPageChanged={props.onPageChanged}
+            portionSize={10}
         />
         {
             props.users.map(el =>  <User

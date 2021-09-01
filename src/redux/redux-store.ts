@@ -1,4 +1,4 @@
-import {applyMiddleware,combineReducers,createStore} from 'redux';
+import {applyMiddleware, combineReducers, compose, createStore} from 'redux';
 import profileReducer from "./profile-reducer";
 import dialogReducer from "./dialog-reducer";
 import friendsReducer from "./friends-reducer";
@@ -7,6 +7,7 @@ import authReducer from "./auth-reducer";
 import thunkMiddleware from 'redux-thunk'
 import {reducer as formReducer} from 'redux-form'
 import {appReducer} from "./app-reducer";
+import {composeWithDevTools} from "redux-devtools-extension";
 declare global {
     interface Window {store: any}
 }
@@ -23,6 +24,6 @@ let rootReducer = combineReducers({
 
 export type AppStateType =ReturnType<typeof rootReducer>
 
-let store = createStore(rootReducer, applyMiddleware(thunkMiddleware)) ;
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunkMiddleware)))
 window.store = window.store || {}
 export default store;
