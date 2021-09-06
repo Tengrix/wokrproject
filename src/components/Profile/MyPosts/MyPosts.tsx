@@ -10,11 +10,10 @@ let maxLength = maxLengthCreator(99)
 
 const MyPosts = React.memo((props: ProfilePropsType) => {
 
-    let messageData = props.message.map(el => <Posts message={el.message} like={el.likeCount}/>)
+    let messageData = props.message.map((el,i) => <Posts key={i} message={el.message} like={el.likeCount}/>)
     let addPost = (value:any) => {
         props.addPost(value.posts)
     }
-    console.log('ds')
     return (
 
         <div className={s.postsBLock}>

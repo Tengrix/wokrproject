@@ -24,9 +24,12 @@ const Pagination = ({onPageChanged,totalItemsCount,pageCount,currentPage,portion
                 {portionNumber > 1 &&
                 <button className={s.btn} onClick={()=> setPortionNumber(portionNumber-1)}> PREV</button>}
                 {pages.filter(el=>el >= leftPortionPageNumber && el <= rightPortionPageNumber)
-                    .map(el => {
-                    return <button className= {currentPage === el ? s.selectedPage : ''}
-                                 onClick={() =>onPageChanged(el)}>{el}</button>
+                    .map((el,i) => {
+                    return <span key={i}>
+                        <button className= {currentPage === el ? s.selectedPage : ''}
+                                onClick={() =>onPageChanged(el)}>{el}</button>
+                    </span>
+
                 })}
 
                 {portionCount > portionNumber &&

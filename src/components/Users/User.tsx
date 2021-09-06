@@ -2,6 +2,7 @@ import React from 'react'
 import s from "./UsersApiComponent.module.css";
 import {UsersType} from "../../redux/users-reducer";
 import {NavLink} from 'react-router-dom';
+import userPhoto from './../../Pics/51f6fb256629fc755b8870c801092942.png'
 
 type UserType = {
     user: UsersType
@@ -17,7 +18,7 @@ let User = ({user, UnFollowFriend, FollowFriend, isFollowing}: UserType) => {
                         <div>
                             <NavLink to={'/profile/' + user.id}>
                                 <img className={s.img}
-                                     src={user.photos.small != null ? user.photos.small : 'https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png'}
+                                     src={user.photos.small != null ? user.photos.small : userPhoto}
                                      alt=""/>
                             </NavLink>
                         </div>

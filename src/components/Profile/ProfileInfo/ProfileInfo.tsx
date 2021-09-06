@@ -1,50 +1,43 @@
-import React from 'react'
+import React, {ChangeEvent} from 'react'
 import s from './ProfileInfo.module.css'
-import {ProfileType} from "../../../redux/profile-reducer";
+import {ProfilePhotoType, ProfileType, saveUserPhoto} from "../../../redux/profile-reducer";
 import Preloader from "../../common/Preloader/Preloader";
 import ProfileStatus from './ProfileStatus'
+import userPhoto from './../../../Pics/51f6fb256629fc755b8870c801092942.png'
+import ProfileData from "./ProfileData";
+
 type ProfileInfoType = {
-    profile:ProfileType
+    profile: ProfileType | null
     status: string;
-    updateProfileStatus: (status:string) => void;
+    updateProfileStatus: (status: string) => void;
+    photos: ProfilePhotoType
+    saveUserPhoto: (img: File) => void
+    isOwner:boolean;
 }
 
-function ProfileInfo(props:ProfileInfoType){
-    if(!props.profile){
+function ProfileInfo(props: ProfileInfoType) {
+    if (!props.profile) {
         return <Preloader/>
+    }
+    const onMainPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            props.saveUserPhoto(e.target.files[0])
+        }
     }
     return (
         <div>
-
-            {/*<div>*/}
-            {/*    <img src={props.pic}/>*/}
-            {/*</div>*/}
             <div className={s.descriptionBlock}>
-                <p>
-                    {props.profile.fullName}
-                </p>
                 <div>
-                    <img src={props.profile.photos.small} alt=""/>
-                    <ProfileStatus status={props.status} updateProfileStatus={props.updateProfileStatus} />
+                    <img src={props.photos.large || userPhoto} alt="profile pic"/>
+                    {props.isOwner&&<input type="file" onChange={onMainPhotoSelected}/>}
+                    <ProfileStatus status={props.status}
+                                   updateProfileStatus={props.updateProfileStatus}
+                    />
                 </div>
-
-                <span> Я будущий спец в IT-INDUSTRY</span>
-                <div>
-                    <div>{props.profile.contacts.vk} </div>
-                    <div>{props.profile.contacts.github} </div>
-                    <div>{props.profile.contacts.facebook}</div>
-                    <div>{props.profile.contacts.twitter} </div>
-                    <div>{props.profile.contacts.website} </div>
-                    <div>{props.profile.contacts.instagram} </div>
-                </div>
-                <div>
-                    {props.profile.lookingForAJob}
-                </div>
-                <div>
-                    {props.profile.lookingForAJobDescription}
-                </div>
+                <ProfileData isOwner={props.isOwner} profile={props.profile}/>
             </div>
         </div>
     )
 }
+
 export default ProfileInfo

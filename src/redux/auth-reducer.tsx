@@ -21,13 +21,13 @@ export type setUserDataTypeAT = {
     data: setUserDataType
 }
 
-export type InitialStateType = {
+export type AuthInitialStateType = {
     data: setUserDataType
     isFetching: boolean;
     resultCode: number;
     messages: string[];
 }
-let initialState: InitialStateType = {
+let initialState: AuthInitialStateType = {
     data: {
         id: null,
         email: null,
@@ -39,7 +39,7 @@ let initialState: InitialStateType = {
     messages: ['']
 }
 
-export const authReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
+export const authReducer = (state: AuthInitialStateType = initialState, action: ActionsTypesF): AuthInitialStateType => {
     switch (action.type) {
         case "SET-USER-DATA":
             return {

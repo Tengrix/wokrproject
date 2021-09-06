@@ -1,40 +1,9 @@
 import axios from "axios";
-import {ProfileType} from "../redux/profile-reducer";
+import {ProfilePhotoType, ProfileType} from "../redux/profile-reducer";
 import {UsersType} from "../redux/users-reducer";
 import {setUserDataType} from "../redux/auth-reducer";
 
-type CommonResponseType<T> = {
-    data:T;
-    resultCode:number;
-    messages:string[];
-    fieldsErrors:string[];
 
-}
-
-export type GetUsersType = {
-    error: string;
-    totalCount: number;
-    items: UsersType[]
-}
-
-type GetAuthType = {
-    data:setUserDataType
-    resultCode: number;
-    messages: string[];
-    fieldsErrors: string[];
-}
-type PostAuthType = {
-    email: string;
-    password:string;
-    rememberMe: boolean;
-    captcha:boolean;
-}
-type PostAuthLoginType = {
-    resultCode: string;
-    messages: string[];
-    fieldsError: string[];
-    data: PostAuthType
-}
 
 const instance = axios.create({
     baseURL:'https://social-network.samuraijs.com/api/1.0/',
@@ -85,5 +54,70 @@ export const profileAPI = {
     },
     updateStatus (status:string) {
         return instance.put<CommonResponseType<{data:string}>>('profile/status',{status})
+    },
+    saveProfile(profile:ProfileType | null){
+        return instance.put<CommonResponseType<{ data:ProfilesType }>>(`profile`,profile)
+    },
+    savePhoto(img: File){
+        const formData = new FormData()
+        formData.append('image',img)
+        return instance.put<CommonResponseType<{photos: ProfilePhotoType }>>(`profile/photo`,formData, {
+            headers:{
+                'Content-type':'mulitpart/form-data'
+            }
+        })
     }
+}
+type CommonResponseType<T> = {
+    data:T;
+    resultCode:number;
+    messages:string[];
+    fieldsErrors:string[];
+
+}
+
+type ContactsType = {
+    github: string;
+    vk: string;
+    facebook: string;
+    instagram: string;
+    twitter?: string;
+    website?: string;
+    youtube?: string;
+    mainLink?: string;
+}
+
+export type ProfilesType = {
+    aboutMe:string;
+    userId: number;
+    lookingForAJob: boolean;
+    lookingForAJobDescription: string;
+    fullName: string;
+    contacts?: ContactsType
+
+}
+
+export type GetUsersType = {
+    error: string;
+    totalCount: number;
+    items: UsersType[]
+}
+
+type GetAuthType = {
+    data:setUserDataType
+    resultCode: number;
+    messages: string[];
+    fieldsErrors: string[];
+}
+type PostAuthType = {
+    email: string;
+    password:string;
+    rememberMe: boolean;
+    captcha:boolean;
+}
+type PostAuthLoginType = {
+    resultCode: string;
+    messages: string[];
+    fieldsError: string[];
+    data: PostAuthType
 }
