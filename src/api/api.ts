@@ -31,18 +31,19 @@ export const usersAPI = {
     }
 }
 export const authAPI = {
+
     getAuthMe (){
         return instance.get<GetAuthType>(`auth/me`).then(response=>response.data)
     },
-    getLogin(email:string, password:string,rememberMe:boolean){
-        return instance.post<CommonResponseType<{ data: PostAuthLoginType }>>('auth/login', {email, password, rememberMe});
+    getLogin(email:string, password:string,rememberMe:boolean, captcha:string){
+        return instance.post<CommonResponseType<{ data: PostAuthLoginType }>>('auth/login', {email, password, rememberMe,captcha});
     },
     getLogOut(){
         return instance.delete<CommonResponseType<{}>>('auth/login')
     },
-    // getCaptcha(url:string){
-    //     return instance.get('security/get-captcha-url')
-    // }
+    getCaptcha(){
+        return instance.get('security/get-captcha-url')
+    }
 }
 
 export const profileAPI = {

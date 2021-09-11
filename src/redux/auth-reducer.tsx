@@ -1,10 +1,12 @@
 import {Dispatch} from "redux";
 import {authAPI, usersAPI} from "../api/api";
 import {stopSubmit} from "redux-form";
+import {ThunkDispatch} from "redux-thunk";
 
 type ActionsTypesF =
     ReturnType<typeof setAuthUserData> |
-    ReturnType<typeof setToggleFetching>
+    ReturnType<typeof setToggleFetching> |
+    ReturnType<typeof getCaptcha>
 
 export type setUserDataType = {
     id: number | null,
@@ -20,12 +22,17 @@ export type setUserDataTypeAT = {
     type: 'SET-USER-DATA'
     data: setUserDataType
 }
+export type getCaptchaType = {
+    type: 'GET-CAPTCHA'
+    url: string
+}
 
 export type AuthInitialStateType = {
     data: setUserDataType
     isFetching: boolean;
     resultCode: number;
     messages: string[];
+    captcha: string;
 }
 let initialState: AuthInitialStateType = {
     data: {
@@ -36,7 +43,8 @@ let initialState: AuthInitialStateType = {
     },
     isFetching: false,
     resultCode: 0,
-    messages: ['']
+    messages: [''],
+    captcha: ''
 }
 
 export const authReducer = (state: AuthInitialStateType = initialState, action: ActionsTypesF): AuthInitialStateType => {
@@ -50,6 +58,10 @@ export const authReducer = (state: AuthInitialStateType = initialState, action: 
             return {
                 ...state,
                 isFetching: action.isFetching
+            }
+        case "GET-CAPTCHA":
+            return {
+                ...state, captcha: action.url
             }
         default:
             return state
@@ -67,45 +79,50 @@ export const setToggleFetching = (isFetching: boolean): setToggleFetching => {
         isFetching
     } as const
 }
+export const getCaptcha = (url: string): getCaptchaType => {
+    return {
+        type: "GET-CAPTCHA",
+        url
+    } as const
+}
 
-export const AuthMe = () => {
-    return async (dispatch: Dispatch) => {
-        const response = await authAPI.getAuthMe()
-        dispatch(setToggleFetching(false))
-        if (response.resultCode === 0) {
-            let {id, login, email} = response.data
-            dispatch(setAuthUserData(id, login, email, true))
-            dispatch(setToggleFetching(true))
-        }
+export const AuthMe = () => async (dispatch: Dispatch) => {
+    const response = await authAPI.getAuthMe()
+    dispatch(setToggleFetching(false))
+    if (response.resultCode === 0) {
+        let {id, login, email} = response.data
+        dispatch(setAuthUserData(id, login, email, true))
+        dispatch(setToggleFetching(true))
     }
 }
-export const AuthLogin = (email: string, password: string, rememberMe: boolean) => {
-    return async (dispatch: any) => {
-        const response = await authAPI.getLogin(email, password, rememberMe)
-        if (response.data.resultCode === 0) {
-            dispatch(AuthMe())
-        } else {
+export const AuthLogin = (email: string, password: string, rememberMe: boolean, captcha:string) => async (dispatch: ThunkDispatch<any, any, any>) => {
+    const response = await authAPI.getLogin(email, password, rememberMe,captcha)
+    if (response.data.resultCode === 0) {
+        dispatch(AuthMe())
+    } else {
+        if (response.data.resultCode === 10) {
+            dispatch(Captcha())
+        }
+        else {
             let message = response.data.messages.length > 0 ? response.data.messages[0] : 'Some error'
             dispatch(stopSubmit('login',
                 {_error: message}))
         }
+
     }
 }
-export const AuthLogOut = () => {
-    return async (dispatch: Dispatch) => {
-        const response = await authAPI.getLogOut()
-        if (response.data.resultCode === 0) {
-            dispatch(setAuthUserData(null, null, null, false))
-        }
+export const AuthLogOut = () => async (dispatch: Dispatch) => {
+    const response = await authAPI.getLogOut()
+    if (response.data.resultCode === 0) {
+        dispatch(setAuthUserData(null, null, null, false))
     }
 }
-// export const Captcha = (url:string) => {
-//     return (dispatch:Dispatch) => {
-//         authAPI.getCaptcha(url).then(response => {
-//             response.data.getCaptcha('')
-//         })
-//     }
-// }
+export const Captcha = () => async (dispatch: Dispatch) => {
+    const response = await authAPI.getCaptcha()
+    if (response.status === 200) {
+        dispatch(getCaptcha(response.data.url))
+    }
+}
 
 
 export default authReducer

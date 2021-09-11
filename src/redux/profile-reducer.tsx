@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {profileAPI, ProfilesType, usersAPI} from "../api/api";
 import {AppStateType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
-import {AuthInitialStateType} from "./auth-reducer";
+
 
 type ActionsTypesF =
     ReturnType<typeof addPost> |
@@ -10,7 +10,8 @@ type ActionsTypesF =
     ReturnType<typeof setStatus> |
     ReturnType<typeof deletePost> |
     ReturnType<typeof isOwner> |
-    ReturnType<typeof successSavePhoto>
+    ReturnType<typeof successSavePhoto>|
+    ReturnType<typeof setError>
 export const ADD_POST = 'ADD-POST'
 
 export type messageType = {
@@ -47,6 +48,10 @@ type savePhotoType = {
     type: 'SAVE-PHOTO'
     photos: ProfilePhotoType;
 }
+type setErrorType = {
+    type: 'SET-ERROR'
+    error: string;
+}
 export type ProfileType = {
     aboutMe: string
     userId: number;
@@ -63,14 +68,15 @@ export type ProfileType = {
         youtube: string;
         mainLink: string;
     }
+    photos: ProfilePhotoType;
 }
 
 export type InitialStateType = {
     message: messageType[];
     profile: ProfileType;
-    photos: ProfilePhotoType
     status: string;
     isOwner: boolean;
+    error:string;
 }
 
 let initialState: InitialStateType = {
@@ -94,14 +100,15 @@ let initialState: InitialStateType = {
             website: '',
             youtube: '',
             mainLink: '',
+        },
+        photos: {
+            large: '',
+            small: ''
         }
     },
-    photos: {
-        large: '',
-        small: ''
-    },
     isOwner: false,
-    status: ''
+    status: '',
+    error:''
 }
 
 export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -134,8 +141,13 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
                 ...state, isOwner: action.value
             }
         case "SAVE-PHOTO":
+            debugger
             return {
-                ...state, photos: action.photos
+                ...state, profile: {...state.profile, photos: action.photos}
+            }
+        case "SET-ERROR":
+            return {
+                ...state, error:action.error
             }
         default:
             return state;
@@ -177,6 +189,12 @@ export const successSavePhoto = (photos: ProfilePhotoType): savePhotoType => {
         photos
     } as const
 }
+export const setError = (error:string): setErrorType => {
+    return {
+        type: 'SET-ERROR',
+        error
+    } as const
+}
 export const GetProfile = (userId: number) => {
     return async (dispatch: Dispatch) => {
         const response = await profileAPI.getProfile(userId)
@@ -203,8 +221,11 @@ export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkD
     let response = await profileAPI.saveProfile(profile)
     if (response.data.resultCode === 0) {
         if (userId != null) {
-            dispatch(GetProfile(userId))
+            await dispatch(GetProfile(userId))
         }
+    }else{
+        dispatch(setError(response.data.messages[0]))
+        return Promise.reject(response.data.messages[0])
     }
 }
 

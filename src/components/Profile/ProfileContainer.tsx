@@ -36,10 +36,8 @@ const ProfileContainer = (props: PropsType) => {
     let myId = useSelector<AppStateType, number | null>(state => state.auth.data.id)
     let id = parseInt(props.match.params.userId)
     useEffect(() => {
-        if (!id) {
-            if (myId != null) {
+        if (!id && myId !=null) {
                 props.GetProfile(myId)
-            }
         } else {
             props.GetProfile(id)
         }
@@ -66,7 +64,7 @@ let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
         status: state.profilePage.status,
         isAuth: state.auth.data.isAuth,
         authorizedUserId: state.auth.data.id,
-        photos: state.profilePage.photos
+        photos: state.profilePage.profile.photos
     }
 }
 export default compose<React.ComponentType>(connect(mapStateToProps,

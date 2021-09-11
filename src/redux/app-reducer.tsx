@@ -26,7 +26,6 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
             let {id, login, email} = res.data
             dispatch(setAuthUserData(id, login, email, true))
             dispatch(isInitializedAc(true))
-        } else {
         }
     } catch (err) {
 

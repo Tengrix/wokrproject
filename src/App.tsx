@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Navbar from './components/Navbar/Navbar'
 import './App.css';
-import {BrowserRouter, Route} from 'react-router-dom'
+import {Redirect, Route} from 'react-router-dom'
 import News from "./components/News/News";
 import Music from "./components/Music/Music";
 import Settings from "./components/Settings/Settings";
@@ -14,8 +14,8 @@ import HeaderContainer from "./components/Header/HeaderContainer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "./redux/redux-store";
 import {initializeAppTC} from "./redux/app-reducer";
-import {CircularProgress} from "@material-ui/core";
 import Preloader from "./components/common/Preloader/Preloader";
+import {CircularProgress} from "@material-ui/core";
 
 const DialogsContainer = React.lazy(()=> import("./components/Dialogs/DialogsContainer"))
 const UsersContainer = React.lazy(()=> import("./components/Users/UsersContainer"))
@@ -24,13 +24,13 @@ const LoginForm = React.lazy(()=> import("./components/Login/LoginForm"))
 
 function App() {
     const dispatch = useDispatch()
-    const isLogged = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
-
+    const isInitialized = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
+    const isAuth = useSelector<AppStateType,boolean>(state => state.auth.data.isAuth)
     useEffect(() => {
         dispatch(initializeAppTC())
     },[])
 
-    if (!isLogged) {
+    if (isInitialized) {
         return <div
             style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
             <CircularProgress/>
@@ -38,7 +38,6 @@ function App() {
     }
 
     return (
-
             <div className="app-wrapper">
                 <HeaderContainer/>
                 <Navbar/>
