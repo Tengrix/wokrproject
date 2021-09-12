@@ -10,9 +10,7 @@ function ProfileStatus(props: ProfileStatusPropsType) {
     const dispatch = useDispatch()
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.status);
-    useEffect(() =>{
-         dispatch(updateProfileStatus(title))
-    },[props.status])
+
     const activateEditMode = () => {
         setEditMode(true);
         setTitle(props.status);

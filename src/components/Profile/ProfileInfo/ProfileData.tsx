@@ -89,7 +89,8 @@ const ProfileData = (props: PropsType) => {
             photos:{
                 small:'',
                 large:''
-            }
+            },
+            status:''
         },
         validate: (values) => {
             const errors = {} as FormikErrorType;

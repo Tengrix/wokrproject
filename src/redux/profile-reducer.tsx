@@ -2,6 +2,7 @@ import {Dispatch} from "redux";
 import {profileAPI, ProfilesType, usersAPI} from "../api/api";
 import {AppStateType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
+import {Redirect} from "react-router-dom";
 
 
 type ActionsTypesF =
@@ -209,10 +210,15 @@ export const getProfileStatus = (userId: number) => {
 }
 export const updateProfileStatus = (status: string) => {
     return async (dispatch: Dispatch) => {
-        const response = await profileAPI.updateStatus(status)
-        if (response.data.resultCode === 0) {
-            dispatch(setStatus(status))
+        try {
+            const response = await profileAPI.updateStatus(status)
+            if (response.data.resultCode === 0) {
+                dispatch(setStatus(status))
+            }
+        }catch (e) {
+            // return <Redirect to={'/404'}/>
         }
+
     }
 }
 export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkDispatch<any, any, any>, getState: () => AppStateType) => {
