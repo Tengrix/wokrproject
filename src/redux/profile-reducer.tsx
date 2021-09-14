@@ -1,5 +1,5 @@
 import {Dispatch} from "redux";
-import {profileAPI, ProfilesType, usersAPI} from "../api/api";
+import {profileAPI} from "../api/api";
 import {AppStateType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
 import {Redirect} from "react-router-dom";
@@ -11,7 +11,7 @@ type ActionsTypesF =
     ReturnType<typeof setStatus> |
     ReturnType<typeof deletePost> |
     ReturnType<typeof isOwner> |
-    ReturnType<typeof successSavePhoto>|
+    ReturnType<typeof successSavePhoto> |
     ReturnType<typeof setError>
 export const ADD_POST = 'ADD-POST'
 
@@ -77,7 +77,7 @@ export type InitialStateType = {
     profile: ProfileType;
     status: string;
     isOwner: boolean;
-    error:string;
+    error: string;
 }
 
 let initialState: InitialStateType = {
@@ -109,7 +109,7 @@ let initialState: InitialStateType = {
     },
     isOwner: false,
     status: '',
-    error:''
+    error: ''
 }
 
 export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -148,7 +148,7 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             }
         case "SET-ERROR":
             return {
-                ...state, error:action.error
+                ...state, error: action.error
             }
         default:
             return state;
@@ -190,16 +190,17 @@ export const successSavePhoto = (photos: ProfilePhotoType): savePhotoType => {
         photos
     } as const
 }
-export const setError = (error:string): setErrorType => {
+export const setError = (error: string): setErrorType => {
     return {
         type: 'SET-ERROR',
         error
     } as const
 }
 export const GetProfile = (userId: number) => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: ThunkDispatch<any, any, any>) => {
         const response = await profileAPI.getProfile(userId)
         dispatch(setProfile(response.data))
+        await dispatch(getProfileStatus(userId))
     }
 }
 export const getProfileStatus = (userId: number) => {
@@ -208,17 +209,12 @@ export const getProfileStatus = (userId: number) => {
         dispatch(setStatus(response.data))
     }
 }
-export const updateProfileStatus = (status: string) => {
-    return async (dispatch: Dispatch) => {
-        try {
-            const response = await profileAPI.updateStatus(status)
-            if (response.data.resultCode === 0) {
-                dispatch(setStatus(status))
-            }
-        }catch (e) {
-            // return <Redirect to={'/404'}/>
-        }
-
+export const updateProfileStatus = (status: string) => async (dispatch: Dispatch) => {
+    const response = await profileAPI.updateStatus(status)
+    if (response.data.resultCode === 0) {
+        dispatch(setStatus(status))
+    } else {
+        console.log(response.data.messages[0])
     }
 }
 export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkDispatch<any, any, any>, getState: () => AppStateType) => {
@@ -229,7 +225,7 @@ export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkD
         if (userId != null) {
             await dispatch(GetProfile(userId))
         }
-    }else{
+    } else {
         dispatch(setError(response.data.messages[0]))
         return Promise.reject(response.data.messages[0])
     }

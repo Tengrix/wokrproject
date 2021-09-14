@@ -58,7 +58,6 @@ const ProfileData = (props: PropsType) => {
     const dispatch = useDispatch()
     const errors = useSelector<AppStateType,string>(state => state.profilePage.error)
     const [serverError, setServerError] = useState<string>(errors)
-    console.log(serverError)
     const classes = useStyles();
     const [modalStyle] = useState(getModalStyle);
     const [open, setOpen] = useState(false);
@@ -89,8 +88,7 @@ const ProfileData = (props: PropsType) => {
             photos:{
                 small:'',
                 large:''
-            },
-            status:''
+            }
         },
         validate: (values) => {
             const errors = {} as FormikErrorType;

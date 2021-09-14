@@ -1,19 +1,22 @@
 import React, {ChangeEvent, useEffect, useState} from 'react'
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {updateProfileStatus} from "../../../redux/profile-reducer";
+import {AppStateType} from "../../../redux/redux-store";
 type ProfileStatusPropsType = {
     status: string;
     updateProfileStatus: (status:string) => void;
+    isOwner:boolean
 }
 
 function ProfileStatus(props: ProfileStatusPropsType) {
-    const dispatch = useDispatch()
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.status);
 
     const activateEditMode = () => {
-        setEditMode(true);
-        setTitle(props.status);
+        if(props.isOwner){
+            setEditMode(true);
+            setTitle(props.status);
+        }
     }
     const activateViewMode = () => {
         setEditMode(false);

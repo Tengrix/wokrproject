@@ -32,6 +32,7 @@ function ProfileInfo(props: ProfileInfoType) {
                     {props.isOwner&&<input type="file" onChange={onMainPhotoSelected}/>}
                     <ProfileStatus status={props.status}
                                    updateProfileStatus={props.updateProfileStatus}
+                                   isOwner={props.isOwner}
                     />
                 </div>
                 <ProfileData isOwner={props.isOwner}

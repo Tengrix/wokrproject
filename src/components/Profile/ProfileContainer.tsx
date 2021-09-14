@@ -36,8 +36,8 @@ const ProfileContainer = (props: PropsType) => {
     let myId = useSelector<AppStateType, number | null>(state => state.auth.data.id)
     let id = parseInt(props.match.params.userId)
     useEffect(() => {
-        if (!id && myId !=null) {
-                props.GetProfile(myId)
+        if (!id && myId != null) {
+            props.GetProfile(myId)
         } else {
             props.GetProfile(id)
         }

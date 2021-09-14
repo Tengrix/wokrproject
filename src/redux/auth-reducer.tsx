@@ -86,24 +86,25 @@ export const getCaptcha = (url: string): getCaptchaType => {
     } as const
 }
 
-export const AuthMe = () => async (dispatch: Dispatch) => {
-    const response = await authAPI.getAuthMe()
-    dispatch(setToggleFetching(false))
-    if (response.resultCode === 0) {
-        let {id, login, email} = response.data
-        dispatch(setAuthUserData(id, login, email, true))
-        dispatch(setToggleFetching(true))
+export const AuthMe = () => {
+    return async (dispatch: Dispatch) => {
+        const response = await authAPI.getAuthMe()
+        dispatch(setToggleFetching(false))
+        if (response.resultCode === 0) {
+            let {id, login, email} = response.data
+            dispatch(setAuthUserData(id, login, email, true))
+            dispatch(setToggleFetching(true))
+        }
     }
 }
-export const AuthLogin = (email: string, password: string, rememberMe: boolean, captcha:string) => async (dispatch: ThunkDispatch<any, any, any>) => {
-    const response = await authAPI.getLogin(email, password, rememberMe,captcha)
+export const AuthLogin = (email: string, password: string, rememberMe: boolean, captcha: string) => async (dispatch: ThunkDispatch<any, any, any>) => {
+    const response = await authAPI.getLogin(email, password, rememberMe, captcha)
     if (response.data.resultCode === 0) {
         dispatch(AuthMe())
     } else {
         if (response.data.resultCode === 10) {
             dispatch(Captcha())
-        }
-        else {
+        } else {
             let message = response.data.messages.length > 0 ? response.data.messages[0] : 'Some error'
             dispatch(stopSubmit('login',
                 {_error: message}))
