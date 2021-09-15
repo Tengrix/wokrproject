@@ -11,7 +11,9 @@ import {
 } from "../../redux/profile-reducer";
 import {compose} from 'redux'
 import {withRouter} from "react-router";
-import {RouteComponentProps, useParams} from "react-router-dom";
+import {Redirect, RouteComponentProps, useParams} from "react-router-dom";
+import {CircularProgress} from "@material-ui/core";
+import Preloader from "../common/Preloader/Preloader";
 
 type MapStateToPropsType = {
     photos: ProfilePhotoType
@@ -33,28 +35,42 @@ export type ProfileContainerPropsType = MapStateToPropsType & MapStateDispatchTo
 export type PropsType = ProfileContainerPropsType & RouteComponentProps<PathParamsType>
 
 const ProfileContainer = (props: PropsType) => {
+    const dispatch = useDispatch()
     let myId = useSelector<AppStateType, number | null>(state => state.auth.data.id)
     let id = parseInt(props.match.params.userId)
+    const isLogged = useSelector<AppStateType, boolean>(state => state.auth.data.isAuth)
+
     useEffect(() => {
-        if (!id && myId != null) {
-            props.GetProfile(myId)
-        } else {
-            props.GetProfile(id)
+        if(isLogged){
+            if (!id && myId != null) {
+                props.GetProfile(myId)
+                dispatch(getProfileStatus(myId))
+
+            } else {
+                props.GetProfile(id)
+                dispatch(getProfileStatus(id))
+            }
         }
     }, [id, myId])
+    if(!isLogged){
+        return <div> <Redirect to={'/login'}/> </div>
+    }
     return (
-        <Profile {...props}
-                 profile={props.profile}
-                 GetProfile={props.GetProfile}
-                 status={props.status}
-                 getProfileStatus={props.getProfileStatus}
-                 updateProfileStatus={props.updateProfileStatus}
-                 isAuth={props.isAuth}
-                 authorizedUserId={props.authorizedUserId}
-                 photos={props.photos}
-                 saveUserPhoto={props.saveUserPhoto}
-                 isOwner={!id}
-        />
+        <div>
+
+            <Profile {...props}
+                     profile={props.profile}
+                     GetProfile={props.GetProfile}
+                     status={props.status}
+                     getProfileStatus={props.getProfileStatus}
+                     updateProfileStatus={props.updateProfileStatus}
+                     isAuth={props.isAuth}
+                     authorizedUserId={props.authorizedUserId}
+                     photos={props.photos}
+                     saveUserPhoto={props.saveUserPhoto}
+                     isOwner={!id}
+            />
+        </div>
     )
 }
 

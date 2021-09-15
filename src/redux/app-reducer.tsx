@@ -1,6 +1,4 @@
-import {Dispatch} from "redux";
-import {authAPI} from "../api/api";
-import {AuthMe, setAuthUserData} from "./auth-reducer";
+import {AuthMe} from "./auth-reducer";
 import {ThunkDispatch} from "redux-thunk";
 
 type initialStateType = {

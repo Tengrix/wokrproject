@@ -116,6 +116,7 @@ export const AuthLogOut = () => async (dispatch: Dispatch) => {
     const response = await authAPI.getLogOut()
     if (response.data.resultCode === 0) {
         dispatch(setAuthUserData(null, null, null, false))
+        dispatch(setToggleFetching(true))
     }
 }
 export const Captcha = () => async (dispatch: Dispatch) => {

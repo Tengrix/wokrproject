@@ -2,8 +2,7 @@ import {Dispatch} from "redux";
 import {profileAPI} from "../api/api";
 import {AppStateType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
-import {Redirect} from "react-router-dom";
-
+import {setToggleFetching} from "./auth-reducer";
 
 type ActionsTypesF =
     ReturnType<typeof addPost> |
@@ -44,6 +43,10 @@ type setProfile = {
 type setStatus = {
     type: 'SET-STATUS'
     status: string
+}
+type IsProfileSetType = {
+    type: 'IS-SET'
+    isSet: boolean
 }
 type savePhotoType = {
     type: 'SAVE-PHOTO'
@@ -109,7 +112,7 @@ let initialState: InitialStateType = {
     },
     isOwner: false,
     status: '',
-    error: ''
+    error: '',
 }
 
 export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -196,11 +199,17 @@ export const setError = (error: string): setErrorType => {
         error
     } as const
 }
+
 export const GetProfile = (userId: number) => {
     return async (dispatch: ThunkDispatch<any, any, any>) => {
-        const response = await profileAPI.getProfile(userId)
-        dispatch(setProfile(response.data))
-        await dispatch(getProfileStatus(userId))
+        dispatch(setToggleFetching(false))
+        try {
+            const response = await profileAPI.getProfile(userId)
+            dispatch(setProfile(response.data))
+            dispatch(setToggleFetching(true))
+        } catch (e) {
+
+        }
     }
 }
 export const getProfileStatus = (userId: number) => {

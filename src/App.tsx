@@ -25,6 +25,7 @@ const LoginForm = React.lazy(() => import("./components/Login/LoginForm"))
 function App() {
     const dispatch = useDispatch()
     const isInitialized = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
+
     useEffect(() => {
         dispatch(initializeAppTC())
     }, [])
@@ -35,6 +36,7 @@ function App() {
             <CircularProgress/>
         </div>
     }
+
 
     return (
         <div className="app-wrapper">
