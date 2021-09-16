@@ -19,6 +19,7 @@ type ContactsType = {
 type PropsType = {
     isOwner: boolean;
     profile: ProfileType;
+    isAuth:boolean;
 }
 type FormikErrorType = {
     userId?: number;
@@ -161,7 +162,7 @@ const ProfileData = (props: PropsType) => {
 
     return (
         <div>
-            {props.isOwner && <button type="button" onClick={handleOpen}>
+            {props.isOwner && <button type="button" disabled={!props.isAuth} onClick={handleOpen}>
                 update profile
             </button>}
             <Modal

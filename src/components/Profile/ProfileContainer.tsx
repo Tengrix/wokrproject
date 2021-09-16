@@ -38,10 +38,11 @@ const ProfileContainer = (props: PropsType) => {
     const dispatch = useDispatch()
     let myId = useSelector<AppStateType, number | null>(state => state.auth.data.id)
     let id = parseInt(props.match.params.userId)
+    const setToggle = useSelector<AppStateType, boolean>(state => state.profilePage.setToggle)
     const isLogged = useSelector<AppStateType, boolean>(state => state.auth.data.isAuth)
 
     useEffect(() => {
-        if(isLogged){
+        if (isLogged) {
             if (!id && myId != null) {
                 props.GetProfile(myId)
                 dispatch(getProfileStatus(myId))
@@ -52,24 +53,25 @@ const ProfileContainer = (props: PropsType) => {
             }
         }
     }, [id, myId])
-    if(!isLogged){
-        return <div> <Redirect to={'/login'}/> </div>
-    }
+    // if(!isLogged){
+    //     return <div> <Redirect to={'/login'}/> </div>
+    // }
     return (
         <div>
-
-            <Profile {...props}
-                     profile={props.profile}
-                     GetProfile={props.GetProfile}
-                     status={props.status}
-                     getProfileStatus={props.getProfileStatus}
-                     updateProfileStatus={props.updateProfileStatus}
-                     isAuth={props.isAuth}
-                     authorizedUserId={props.authorizedUserId}
-                     photos={props.photos}
-                     saveUserPhoto={props.saveUserPhoto}
-                     isOwner={!id}
-            />
+            {!setToggle ? <Preloader/> :
+                <Profile {...props}
+                         profile={props.profile}
+                         GetProfile={props.GetProfile}
+                         status={props.status}
+                         getProfileStatus={props.getProfileStatus}
+                         updateProfileStatus={props.updateProfileStatus}
+                         isAuth={props.isAuth}
+                         authorizedUserId={props.authorizedUserId}
+                         photos={props.photos}
+                         saveUserPhoto={props.saveUserPhoto}
+                         isOwner={!id}
+                />
+            }
         </div>
     )
 }

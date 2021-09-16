@@ -2,7 +2,7 @@ import {Dispatch} from "redux";
 import {profileAPI} from "../api/api";
 import {AppStateType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
-import {setToggleFetching} from "./auth-reducer";
+
 
 type ActionsTypesF =
     ReturnType<typeof addPost> |
@@ -11,7 +11,8 @@ type ActionsTypesF =
     ReturnType<typeof deletePost> |
     ReturnType<typeof isOwner> |
     ReturnType<typeof successSavePhoto> |
-    ReturnType<typeof setError>
+    ReturnType<typeof setError>|
+    ReturnType<typeof setToggleFetching>
 export const ADD_POST = 'ADD-POST'
 
 export type messageType = {
@@ -26,6 +27,10 @@ export type ProfilePhotoType = {
 }
 type isOwnerType = {
     type: 'IS-OWNER'
+    value: boolean;
+}
+type setToggleFetchingType = {
+    type: 'IS-FETCHING'
     value: boolean;
 }
 type DelPostType = {
@@ -81,6 +86,7 @@ export type InitialStateType = {
     status: string;
     isOwner: boolean;
     error: string;
+    setToggle:boolean;
 }
 
 let initialState: InitialStateType = {
@@ -113,6 +119,7 @@ let initialState: InitialStateType = {
     isOwner: false,
     status: '',
     error: '',
+    setToggle:false
 }
 
 export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
@@ -153,6 +160,10 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             return {
                 ...state, error: action.error
             }
+        case "IS-FETCHING":
+            return {
+                ...state, setToggle:action.value
+            }
         default:
             return state;
     }
@@ -179,6 +190,12 @@ export const deletePost = (id: number): DelPostType => {
     return {
         type: 'DEL-POST',
         id
+    } as const
+}
+export const setToggleFetching = (value: boolean): setToggleFetchingType => {
+    return {
+        type: 'IS-FETCHING',
+        value
     } as const
 }
 export const isOwner = (value: boolean): isOwnerType => {

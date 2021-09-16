@@ -53,8 +53,6 @@ const LoginForm: React.FC<InjectedFormProps<FormDataType>> = ({handleSubmit, err
                     Login
                 </button>
             </div>
-
-
         </form>
     )
 }

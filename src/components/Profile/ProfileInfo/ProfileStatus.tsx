@@ -5,7 +5,8 @@ import {AppStateType} from "../../../redux/redux-store";
 type ProfileStatusPropsType = {
     status: string;
     updateProfileStatus: (status:string) => void;
-    isOwner:boolean
+    isOwner:boolean;
+    isAuth:boolean;
 }
 
 function ProfileStatus(props: ProfileStatusPropsType) {
@@ -13,14 +14,16 @@ function ProfileStatus(props: ProfileStatusPropsType) {
     let [title, setTitle] = useState(props.status);
 
     const activateEditMode = () => {
-        if(props.isOwner){
+        if(props.isOwner && props.isAuth){
             setEditMode(true);
             setTitle(props.status);
         }
     }
     const activateViewMode = () => {
-        setEditMode(false);
-        props.updateProfileStatus(title);
+        if(props.isAuth){
+            setEditMode(false);
+            props.updateProfileStatus(title);
+        }
     }
     const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
