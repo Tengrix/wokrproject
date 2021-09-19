@@ -1,4 +1,4 @@
-import profileReducer, {addPost, deletePost, messageType} from "./profile-reducer";
+import profileReducer, {messageType, profileActions, ProfileType} from "./profile-reducer";
 
 let state = {
     message: [
@@ -6,12 +6,15 @@ let state = {
         {id: 2, message: 'It is my first post', likeCount: 11},
 
     ]as messageType[] ,
-    profile: null,
-    status:''
+    profile: null as ProfileType,
+    status:'',
+    isOwner:false,
+    error:'',
+    setToggle:false
 }
 test('length of posts should be incremented', () =>{
     //1.start data
-    let action = addPost('it-kamasutra')
+    let action = profileActions.addPost('it-kamasutra')
 
 //2.action
     let newState = profileReducer(state,action);
@@ -21,7 +24,7 @@ test('length of posts should be incremented', () =>{
 })
 test('The name of new post should be correct', () =>{
     //1.start data
-    let action = addPost('it-kamasutra')
+    let action = profileActions.addPost('it-kamasutra')
 
 //2.action
     let newState = profileReducer(state,action);
@@ -31,7 +34,7 @@ test('The name of new post should be correct', () =>{
 })
 test('Length of array should be decrement', () =>{
     //1.start data
-    let action = deletePost(2)
+    let action = profileActions.deletePost(2)
 
 //2.action
     let newState = profileReducer(state,action);

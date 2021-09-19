@@ -4,8 +4,6 @@ import {AppStateType} from "../../redux/redux-store";
 import {
     FollowFriend,
     getUser,
-    setCurrentPage,
-    setToggleFollowing,
     UnFollowFriend,
     UsersType
 } from "../../redux/users-reducer";
@@ -82,8 +80,6 @@ export default compose<React.ComponentType>(
     connect(mapStateToProps, {
         FollowFriend,
         UnFollowFriend,
-        setCurrentPage,
-        setToggleFollowing,
         getUser
     }),
     withRouter, withAuthRedirectComponent)

@@ -1,6 +1,6 @@
 import React, {ChangeEvent} from 'react'
 import s from './ProfileInfo.module.css'
-import {ProfilePhotoType, ProfileType, saveUserProfile, setError} from "../../../redux/profile-reducer";
+import {ProfilePhotoType, ProfileType} from "../../../redux/profile-reducer";
 import Preloader from "../../common/Preloader/Preloader";
 import ProfileStatus from './ProfileStatus'
 import userPhoto from './../../../Pics/51f6fb256629fc755b8870c801092942.png'

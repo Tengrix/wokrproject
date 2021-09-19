@@ -1,5 +1,5 @@
 import {useFormik} from "formik";
-import {ProfileType, saveUserProfile, setError} from "../../../redux/profile-reducer";
+import {profileActions, ProfileType, saveUserProfile} from "../../../redux/profile-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {useState} from "react";
 import s from './ProfileInfo.module.css'
@@ -109,8 +109,8 @@ const ProfileData = (props: PropsType) => {
                 await dispatch(saveUserProfile(values))
                 handleClose()
                 setServerError('')
-            }catch (e){
-                setError(e)
+            }catch (e:any){
+                profileActions.setError(e)
                 setServerError(e)
             }
             formik.resetForm();

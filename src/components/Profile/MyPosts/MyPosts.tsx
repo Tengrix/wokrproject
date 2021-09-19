@@ -1,18 +1,21 @@
 import React from 'react';
 import s from './MyPosts.module.css';
 import Posts from "./Post/Post";
-import {ProfilePropsType} from "./MyPostsContainer";
-import {Field, InjectedFormProps} from "redux-form";
-import {reduxForm} from "redux-form";
-import { maxLengthCreator, requiredField} from "../../utils/validators/validator";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
+import {maxLengthCreator, requiredField} from "../../utils/validators/validator";
 import {TextArea} from "../../common/FormController/FormController";
+import {useDispatch, useSelector} from "react-redux";
+import {AppStateType} from "../../../redux/redux-store";
+import {messageType, profileActions} from "../../../redux/profile-reducer";
+
 let maxLength = maxLengthCreator(99)
 
-const MyPosts = React.memo((props: ProfilePropsType) => {
-
-    let messageData = props.message.map((el,i) => <Posts key={i} message={el.message} like={el.likeCount}/>)
+const MyPosts = React.memo((props) => {
+    const dispatch = useDispatch()
+    const message = useSelector<AppStateType, messageType[]>(state => state.profilePage.message)
+    let messageData = message.map((el,i) => <Posts key={i} message={el.message} like={el.likeCount}/>)
     let addPost = (value:any) => {
-        props.addPost(value.posts)
+        dispatch(profileActions.addPost(value.posts))
     }
     return (
 

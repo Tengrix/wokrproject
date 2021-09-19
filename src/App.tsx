@@ -17,7 +17,7 @@ import {initializeAppTC} from "./redux/app-reducer";
 import Preloader from "./components/common/Preloader/Preloader";
 import {CircularProgress} from "@material-ui/core";
 
-const DialogsContainer = React.lazy(() => import("./components/Dialogs/DialogsContainer"))
+const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"))
 const UsersContainer = React.lazy(() => import("./components/Users/UsersContainer"))
 const ProfileContainer = React.lazy(() => import("./components/Profile/ProfileContainer"))
 const LoginForm = React.lazy(() => import("./components/Login/LoginForm"))
@@ -49,7 +49,7 @@ function App() {
                     }}/>
                     <React.Suspense fallback={<Preloader/>}>
                         <Route path='/dialogs' render={() => {
-                            return <DialogsContainer/>
+                            return <Dialogs/>
                         }}/>
                         <Route path='/profile/:userId?' render={() => {
                             return <ProfileContainer/>

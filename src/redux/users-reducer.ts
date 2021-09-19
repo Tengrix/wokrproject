@@ -1,15 +1,7 @@
-import {usersAPI} from "../api/api";
+import {CommonResponseType, ResultCodesEnum, usersAPI} from "../api/api";
 import {Dispatch} from "redux";
 import {objectHelper} from "../components/utils/helper";
-
-type ActionsTypesF =
-    ReturnType<typeof follow> |
-    ReturnType<typeof unfollow> |
-    ReturnType<typeof setUser> |
-    ReturnType<typeof setCurrentPage> |
-    ReturnType<typeof setTotalUsersCount> |
-    ReturnType<typeof setToggleFetching> |
-    ReturnType<typeof setToggleFollowing>
+import {InferActionsType} from "./redux-store";
 
 export type UsersPhotoType = {
     small: string;
@@ -32,36 +24,7 @@ export type InitialStateType = {
     isFetching: boolean
     isFollowing: number[]
 }
-export type followAT = {
-    type: 'FOLLOW'
-    userId: number
-}
-export type unfollowAT = {
-    type: 'UNFOLLOW'
-    userId: number
-}
-export type followUnfollow = followAT | unfollowAT
-export type setUserAT = {
-    type: 'SET-USERS'
-    users: UsersType[]
-}
-export type setPageAT = {
-    type: 'SET-PAGE'
-    pageNumber: number
-}
-export type setTotalUsersCountAT = {
-    type: 'SET-TOTAL-USERS'
-    totalUsersCount: number
-}
-export type setToggleFetching = {
-    type: 'SET-TOGGLE-FETCHING'
-    isFetching: boolean
-}
-export type setToggleFollowing = {
-    type: 'SET-TOGGLE-FOLLOWING'
-    id: number
-    isFetching: boolean;
-}
+
 let initialState: InitialStateType = {
     users: [] as UsersType[],
     pageCount: 10,
@@ -71,7 +34,7 @@ let initialState: InitialStateType = {
     isFollowing: []
 }
 
-const usersReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
+const usersReducer = (state: InitialStateType = initialState, action: ActionType): InitialStateType => {
     switch (action.type) {
         case 'FOLLOW':
             return {
@@ -109,59 +72,66 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionsTyp
             return state;
     }
 }
-export const follow = (userId: number): followAT => {
-    return {
-        type: 'FOLLOW',
-        userId
-    } as const
+
+type ActionType = InferActionsType<typeof usersActions>
+
+export const usersActions = {
+    follow: (userId: number) => {
+        return {
+            type: 'FOLLOW',
+            userId
+        } as const
+    },
+    unfollow: (userId: number) => {
+        return {
+            type: 'UNFOLLOW',
+            userId
+        } as const
+    },
+    setUser: (users: UsersType[]) => {
+        return {
+            type: 'SET-USERS',
+            users
+        } as const
+    },
+    setCurrentPage: (pageNumber: number) => {
+        return {
+            type: 'SET-PAGE',
+            pageNumber
+        } as const
+    },
+    setTotalUsersCount: (totalUsersCount: number) => {
+        return {
+            type: 'SET-TOTAL-USERS',
+            totalUsersCount
+        } as const
+    },
+    setToggleFetching: (isFetching: boolean) => {
+        return {
+            type: "SET-TOGGLE-FETCHING",
+            isFetching
+        } as const
+    },
+    setToggleFollowing: (isFetching: boolean, id: number) => {
+        return {
+            type: 'SET-TOGGLE-FOLLOWING',
+            id,
+            isFetching
+        } as const
+    }
 }
-export const unfollow = (userId: number): unfollowAT => {
-    return {
-        type: 'UNFOLLOW',
-        userId
-    } as const
-}
-export const setUser = (users: UsersType[]): setUserAT => {
-    return {
-        type: 'SET-USERS',
-        users
-    } as const
-}
-export const setCurrentPage = (pageNumber: number): setPageAT => {
-    return {
-        type: 'SET-PAGE',
-        pageNumber
-    } as const
-}
-export const setTotalUsersCount = (totalUsersCount: number): setTotalUsersCountAT => {
-    return {
-        type: 'SET-TOTAL-USERS',
-        totalUsersCount
-    } as const
-}
-export const setToggleFetching = (isFetching: boolean): setToggleFetching => {
-    return {
-        type: "SET-TOGGLE-FETCHING",
-        isFetching
-    } as const
-}
-export const setToggleFollowing = (isFetching: boolean, id: number): setToggleFollowing => {
-    return {
-        type: 'SET-TOGGLE-FOLLOWING',
-        id,
-        isFetching
-    } as const
-}
+
+
 
 export const getUser = (currentPage: number, pageCount: number) => {
     return async (dispatch: Dispatch) => {
         try {
-            dispatch(setToggleFetching(true));
-            dispatch(setCurrentPage(currentPage))
+            dispatch(usersActions.setToggleFetching(true));
+            dispatch(usersActions.setCurrentPage(currentPage))
             const response = await usersAPI.getUsers(currentPage, pageCount)
-            dispatch(setToggleFetching(false))
-            dispatch(setUser(response.items))
-            dispatch(setTotalUsersCount(response.totalCount))
+            dispatch(usersActions.setToggleFetching(false))
+            dispatch(usersActions.setUser(response.items))
+            dispatch(usersActions.setTotalUsersCount(response.totalCount))
         } catch (e) {
 
         }
@@ -169,29 +139,28 @@ export const getUser = (currentPage: number, pageCount: number) => {
 
 }
 
-const followUnfollow = async (dispatch: Dispatch, userId: number, apiMethod: any, actionCreator: (userId: number) => followUnfollow) => {
-    dispatch(setToggleFollowing(true, userId))
+export const followUnfollow = async (dispatch: Dispatch, userId: number, apiMethod: (userId:number)=> Promise<CommonResponseType>, actionCreator: (userId: number) => ActionType) => {
+    dispatch(usersActions.setToggleFollowing(true, userId))
     const response = await apiMethod(userId)
-    if (response.resultCode == 0) {
+    if (response.resultCode === ResultCodesEnum.Success) {
         dispatch(actionCreator(userId))
     }
-    dispatch(setToggleFollowing(false, userId))
+    dispatch(usersActions.setToggleFollowing(false, userId))
 }
 
 export const FollowFriend = (userId: number) => {
     return async (dispatch: Dispatch) => {
         try {
-            await followUnfollow(dispatch, userId, usersAPI.FollowFriends.bind(usersAPI), follow)
+            await followUnfollow(dispatch, userId, usersAPI.FollowFriends.bind(usersAPI), usersActions.follow)
         } catch (e) {
 
         }
-
     }
 }
 export const UnFollowFriend = (userId: number) => {
     return async (dispatch: Dispatch) => {
         try {
-            await followUnfollow(dispatch, userId, usersAPI.UnFollowFriends.bind(usersAPI), unfollow)
+            await followUnfollow(dispatch, userId, usersAPI.UnFollowFriends.bind(usersAPI), usersActions.unfollow)
         } catch (e) {
 
         }

@@ -1,6 +1,5 @@
 import React from 'react';
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
-import MyPostsContainer from "./MyPosts/MyPostsContainer";
 import {ProfilePhotoType, ProfileType} from "../../redux/profile-reducer";
 import {ProfileContainerPropsType} from "./ProfileContainer";
 
@@ -25,7 +24,6 @@ function Profile({profile,updateProfileStatus,photos,saveUserPhoto,status,isOwne
                 saveUserPhoto={saveUserPhoto}
                 isOwner={isOwner}
             />
-            <MyPostsContainer/>
         </div>
     );
 }

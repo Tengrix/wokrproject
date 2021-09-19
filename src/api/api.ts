@@ -24,10 +24,10 @@ export const usersAPI = {
    },
 
     FollowFriends(id:number){
-        return instance.post<CommonResponseType<{}>>(`follow/${id}`).then(response=>response.data)
+        return instance.post<CommonResponseType>(`follow/${id}`).then(response=>response.data)
     },
     UnFollowFriends(id:number){
-        return instance.delete<CommonResponseType<{}>>(`follow/${id}`).then(response=>response.data)
+        return instance.delete<CommonResponseType>(`follow/${id}`).then(response=>response.data)
     }
 }
 export const authAPI = {
@@ -39,7 +39,7 @@ export const authAPI = {
         return instance.post<CommonResponseType<{ data: PostAuthLoginType }>>('auth/login', {email, password, rememberMe,captcha});
     },
     getLogOut(){
-        return instance.delete<CommonResponseType<{}>>('auth/login')
+        return instance.delete<CommonResponseType>('auth/login')
     },
     getCaptcha(){
         return instance.get('security/get-captcha-url')
@@ -69,7 +69,14 @@ export const profileAPI = {
         })
     }
 }
-type CommonResponseType<T> = {
+
+export enum ResultCodesEnum {
+    Success = 0,
+    Fail = 1,
+    InvalidSymbols = 10
+}
+
+export type CommonResponseType<T = {}> = {
     data:T;
     resultCode:number;
     messages:string[];

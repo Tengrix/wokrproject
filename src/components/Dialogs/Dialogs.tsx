@@ -2,14 +2,18 @@ import React from 'react'
 import s from './Dialogs.module.css'
 import DialogItems from "./DialogItems/DialogItems";
 import Message from "./Message/Message";
-import {DialogsPropsType} from "./DialogsContainer";
 import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {TextArea} from "../common/FormController/FormController";
 import {maxLengthCreator, requiredField} from "../utils/validators/validator";
+import {useDispatch, useSelector} from "react-redux";
+import {dialogActions, InitialDialogStateType} from "../../redux/dialog-reducer";
+import {AppStateType} from "../../redux/redux-store";
 
 let maxLength = maxLengthCreator(10)
-function Dialogs(props: DialogsPropsType) {
-    let state = props.dialogPage
+function Dialogs() {
+    const dialogPage = useSelector<AppStateType,InitialDialogStateType>(state => state.dialogPage)
+    const dispatch = useDispatch()
+    let state = dialogPage
 
     let usersData = state.users.map(el => <DialogItems
         key={el.id}
@@ -22,7 +26,7 @@ function Dialogs(props: DialogsPropsType) {
         id={el.id}
     />)
     let onNewMessageClick = (value:any) => {
-        props.sendMessage(value.dialog)
+        dispatch(dialogActions.sendMessage(value.dialog))
     }
     return (
         <div className={s.dialogs}>

@@ -1,19 +1,8 @@
 import {Dispatch} from "redux";
-import {profileAPI} from "../api/api";
-import {AppStateType} from "./redux-store";
+import {profileAPI, ResultCodesEnum} from "../api/api";
+import {AppStateType, InferActionsType} from "./redux-store";
 import {ThunkDispatch} from "redux-thunk";
 
-
-type ActionsTypesF =
-    ReturnType<typeof addPost> |
-    ReturnType<typeof setProfile> |
-    ReturnType<typeof setStatus> |
-    ReturnType<typeof deletePost> |
-    ReturnType<typeof isOwner> |
-    ReturnType<typeof successSavePhoto> |
-    ReturnType<typeof setError>|
-    ReturnType<typeof setToggleFetching>
-export const ADD_POST = 'ADD-POST'
 
 export type messageType = {
     message: string;
@@ -24,42 +13,6 @@ export type messageType = {
 export type ProfilePhotoType = {
     small: string
     large: string
-}
-type isOwnerType = {
-    type: 'IS-OWNER'
-    value: boolean;
-}
-type setToggleFetchingType = {
-    type: 'IS-FETCHING'
-    value: boolean;
-}
-type DelPostType = {
-    type: 'DEL-POST'
-    id: number;
-}
-type addPostType = {
-    type: 'ADD-POST'
-    posts: string
-}
-type setProfile = {
-    type: 'SET-PROFILE'
-    profile: ProfileType
-}
-type setStatus = {
-    type: 'SET-STATUS'
-    status: string
-}
-type IsProfileSetType = {
-    type: 'IS-SET'
-    isSet: boolean
-}
-type savePhotoType = {
-    type: 'SAVE-PHOTO'
-    photos: ProfilePhotoType;
-}
-type setErrorType = {
-    type: 'SET-ERROR'
-    error: string;
 }
 export type ProfileType = {
     aboutMe: string
@@ -122,9 +75,9 @@ let initialState: InitialStateType = {
     setToggle:false
 }
 
-export const profileReducer = (state: InitialStateType = initialState, action: ActionsTypesF): InitialStateType => {
+export const profileReducer = (state: InitialStateType = initialState, action: ActionType): InitialStateType => {
     switch (action.type) {
-        case ADD_POST: {
+        case 'ADD-POST': {
             const newPost: messageType = {
                 id: 3,
                 message: action.posts,
@@ -168,62 +121,69 @@ export const profileReducer = (state: InitialStateType = initialState, action: A
             return state;
     }
 }
-export const addPost = (posts: string): addPostType => {
-    return {
-        type: ADD_POST,
-        posts
-    } as const
+
+type ActionType = InferActionsType<typeof profileActions>
+
+export const profileActions = {
+    addPost:(posts: string) => {
+        return {
+            type: 'ADD-POST',
+            posts
+        } as const
+    },
+    setProfile:(profile: ProfileType) => {
+        return {
+            type: 'SET-PROFILE',
+            profile
+        } as const
+    },
+    setStatus: (status: string) => {
+        return {
+            type: 'SET-STATUS',
+            status
+        } as const
+    },
+    deletePost:(id: number) => {
+        return {
+            type: 'DEL-POST',
+            id
+        } as const
+    },
+    setToggleFetching: (value: boolean) => {
+        return {
+            type: 'IS-FETCHING',
+            value
+        } as const
+    },
+    isOwner: (value: boolean) => {
+        return {
+            type: 'IS-OWNER',
+            value
+        } as const
+    },
+    successSavePhoto: (photos: ProfilePhotoType) => {
+        return {
+            type: 'SAVE-PHOTO',
+            photos
+        } as const
+    },
+    setError: (error: string) => {
+        return {
+            type: 'SET-ERROR',
+            error
+        } as const
+    }
 }
-export const setProfile = (profile: ProfileType): setProfile => {
-    return {
-        type: 'SET-PROFILE',
-        profile
-    } as const
-}
-export const setStatus = (status: string): setStatus => {
-    return {
-        type: 'SET-STATUS',
-        status
-    } as const
-}
-export const deletePost = (id: number): DelPostType => {
-    return {
-        type: 'DEL-POST',
-        id
-    } as const
-}
-export const setToggleFetching = (value: boolean): setToggleFetchingType => {
-    return {
-        type: 'IS-FETCHING',
-        value
-    } as const
-}
-export const isOwner = (value: boolean): isOwnerType => {
-    return {
-        type: 'IS-OWNER',
-        value
-    } as const
-}
-export const successSavePhoto = (photos: ProfilePhotoType): savePhotoType => {
-    return {
-        type: 'SAVE-PHOTO',
-        photos
-    } as const
-}
-export const setError = (error: string): setErrorType => {
-    return {
-        type: 'SET-ERROR',
-        error
-    } as const
-}
+
+
 
 export const GetProfile = (userId: number) => {
     return async (dispatch: ThunkDispatch<any, any, any>) => {
-        dispatch(setToggleFetching(false))
+        dispatch(profileActions.setToggleFetching(false))
         try {
             const response = await profileAPI.getProfile(userId)
-            dispatch(setProfile(response.data))
-            dispatch(setToggleFetching(true))
+            dispatch(profileActions.setProfile(response.data))
+            dispatch(profileActions.setToggleFetching(true))
         } catch (e) {
 
         }
@@ -232,13 +192,13 @@ export const GetProfile = (userId: number) => {
 export const getProfileStatus = (userId: number) => {
     return async (dispatch: Dispatch) => {
         const response = await profileAPI.getStatus(userId)
-        dispatch(setStatus(response.data))
+        dispatch(profileActions.setStatus(response.data))
     }
 }
 export const updateProfileStatus = (status: string) => async (dispatch: Dispatch) => {
     const response = await profileAPI.updateStatus(status)
-    if (response.data.resultCode === 0) {
-        dispatch(setStatus(status))
+    if (response.data.resultCode === ResultCodesEnum.Success) {
+        dispatch(profileActions.setStatus(status))
     } else {
         console.log(response.data.messages[0])
     }
@@ -247,12 +207,12 @@ export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkD
 
     let userId = getState().auth.data.id
     let response = await profileAPI.saveProfile(profile)
-    if (response.data.resultCode === 0) {
+    if (response.data.resultCode === ResultCodesEnum.Success) {
         if (userId != null) {
             await dispatch(GetProfile(userId))
         }
     } else {
-        dispatch(setError(response.data.messages[0]))
+        dispatch(profileActions.setError(response.data.messages[0]))
         return Promise.reject(response.data.messages[0])
     }
 }
@@ -260,8 +220,8 @@ export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkD
 export const saveUserPhoto = (img: File) => async (dispatch: Dispatch) => {
 
     const response = await profileAPI.savePhoto(img)
-    if (response.data.resultCode === 0) {
-        dispatch(successSavePhoto(response.data.data.photos))
+    if (response.data.resultCode === ResultCodesEnum.Success) {
+        dispatch(profileActions.successSavePhoto(response.data.data.photos))
     }
 }
 export default profileReducer
