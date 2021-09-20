@@ -1,6 +1,6 @@
 import {CommonResponseType, ResultCodesEnum} from "../api/api";
 import {usersAPI} from "../api/api";
-import {FollowFriend, usersActions} from "./users-reducer";
+import {FollowFriend, UnFollowFriend, usersActions} from "./users-reducer";
 import actions from "redux-form/lib/actions";
 
 jest.mock("../api/api");
@@ -8,21 +8,20 @@ const userApiMock = usersAPI as jest.Mocked<typeof usersAPI>;
 
 const result:CommonResponseType = {
     data:{},
-    resultCode: ResultCodesEnum.Fail,
-    messages:['asd'],
+    resultCode: ResultCodesEnum.Success,
+    messages:[],
     fieldsErrors:[]
 }
 
-userApiMock.FollowFriends.mockReturnValue(Promise.resolve(result))
+userApiMock.FollowFriends.mockResolvedValueOnce(Promise.resolve(result))
 
 test('followThunk', async ()=>{
-    const thunk:any = FollowFriend(1)
-    const dispatchMock = jest.fn<any,any>()
-    const getState = jest.fn<any,any>()
+    const thunk = UnFollowFriend(3)
+    const dispatchMock = jest.fn()
 
-    await thunk(dispatchMock, getState, {})
-    expect(dispatchMock).toBeCalledTimes(1)
-    expect(dispatchMock).toHaveBeenNthCalledWith(1, usersActions.setToggleFollowing(true,1))
+    await thunk(dispatchMock)
+    expect(dispatchMock).toBeCalledTimes(3)
+    // expect(dispatchMock).toHaveBeenNthCalledWith(1, usersActions.setToggleFollowing(true,1))
     // expect(dispatchMock).toHaveBeenNthCalledWith(2, usersActions.follow(1))
     // expect(dispatchMock).toHaveBeenNthCalledWith(3, usersActions.setToggleFollowing(false,1))
 

@@ -136,7 +136,6 @@ export const getUser = (currentPage: number, pageCount: number) => {
 
         }
     }
-
 }
 
 export const followUnfollow = async (dispatch: Dispatch, userId: number, apiMethod: (userId:number)=> Promise<CommonResponseType>, actionCreator: (userId: number) => ActionType) => {

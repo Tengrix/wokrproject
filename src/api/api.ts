@@ -111,7 +111,7 @@ export type GetUsersType = {
     items: UsersType[]
 }
 
-type GetAuthType = {
+export type GetAuthType = {
     data:setUserDataType
     resultCode: number;
     messages: string[];
@@ -121,10 +121,10 @@ type PostAuthType = {
     email: string;
     password:string;
     rememberMe: boolean;
-    captcha:boolean;
+    captcha:string;
 }
-type PostAuthLoginType = {
-    resultCode: string;
+export type PostAuthLoginType = {
+    resultCode: number;
     messages: string[];
     fieldsError: string[];
     data: PostAuthType

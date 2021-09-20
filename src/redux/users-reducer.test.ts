@@ -14,9 +14,11 @@ beforeEach(()=>{
         totalUsersCount: 0,
         currentPage: 1,
         isFetching: true,
-        isFollowing: []
+        isFollowing: [1]
     }
 })
+
+const newInitState:any = []
 
 test('follow user', ()=>{
     let action = usersActions.follow(2)
@@ -32,3 +34,34 @@ test('unFollow user', ()=>{
     expect(newState.users[0].followed).toBeFalsy()
     expect(newState.users[3].followed).toBeFalsy()
 })
+
+test('set user', ()=>{
+    let action = usersActions.setUser([{id:1, name:'Taddd',status:'heyhey',photos:{large:'',small:''},photoUrl:'',followed:false}])
+    let newState = usersReducer(newInitState,action)
+    expect(newState.users[0].name).toBe('Taddd')
+    expect(newState.users[0].status).toBe('heyhey')
+})
+
+test('current page',()=>{
+    let action = usersActions.setCurrentPage(2)
+    let newState = usersReducer(state, action)
+    expect(newState.currentPage).toBe(2)
+})
+
+test('total users count', ()=>{
+    let action = usersActions.setTotalUsersCount(100)
+    let newState = usersReducer(state, action)
+    expect(newState.totalUsersCount).toBe(100)
+})
+
+test('', ()=>{
+    let action = usersActions.setToggleFetching(true)
+    let newState = usersReducer(state, action)
+    expect(newState.isFetching).toBeTruthy()
+})
+
+// test('', ()=>{
+//     let action = usersActions.setToggleFollowing(false, 1)
+//     let newState = usersReducer(state, action)
+//     expect(newState.isFollowing).toBeTruthy()
+// })

@@ -2,13 +2,13 @@ import {AuthMe} from "./auth-reducer";
 import {ThunkDispatch} from "redux-thunk";
 import {InferActionsType} from "./redux-store";
 
-type initialStateType = {
+export type appInitialStateType = {
     isInitialized: boolean
 }
-const initialState: initialStateType = {
+const initialState: appInitialStateType = {
     isInitialized: false
 }
-export const appReducer = (state: initialStateType = initialState, action:ActionsType): initialStateType => {
+export const appReducer = (state: appInitialStateType = initialState, action:ActionsType): appInitialStateType => {
     switch (action.type) {
         case'IS-INITIALIZED': {
             return {...state, isInitialized: true}
@@ -20,7 +20,7 @@ export const appReducer = (state: initialStateType = initialState, action:Action
 
 type ActionsType = InferActionsType<typeof appActions>
 
-const appActions = {
+export const appActions = {
     isInitializedAc: () => ({type: 'IS-INITIALIZED'} as const),
 }
 export const initializeAppTC = () => async (dispatch: ThunkDispatch<any, any, any>) => {
