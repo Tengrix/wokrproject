@@ -15,11 +15,12 @@ import {withAuthRedirectComponent} from "../../hoc/WithAuthRedirectComponent";
 import {
     getCurrentPage,
     getIsFetching,
-    getIsFollowing,
+    getIsFollowing, getIsSearchingName,
     getPageSize,
     getTotalUsersCount,
     getUsers
 } from "./users-selectors";
+
 
 export type MapStateToPropsType = {
     users: UsersType[];
@@ -28,12 +29,14 @@ export type MapStateToPropsType = {
     currentPage: number
     isFetching: boolean
     isFollowing: number[]
+    searchingName:string
 }
 
 type MapDispatchToPropsType = {
-    getUser: (currentPage: number, pageCount: number) => void
+    getUser: (currentPage: number, pageCount: number, term:string) => void
     FollowFriend: (id: number) => void;
     UnFollowFriend: (id: number) => void;
+    onFilterChanged: (term:string) => void;
 }
 
 export type UsersPropsType = MapStateToPropsType & MapDispatchToPropsType
@@ -41,14 +44,18 @@ export type UsersPropsType = MapStateToPropsType & MapDispatchToPropsType
 class UsersAPIComponent extends React.Component<UsersPropsType, UsersPropsType> {
     componentDidMount() {
         const {getUser,currentPage,pageCount} = this.props
-        getUser(currentPage, pageCount)
+        getUser(currentPage, pageCount, '')
     }
 
     onPageChanged = (pageNumber: number) => {
-        const {getUser,pageCount} = this.props
-        getUser(pageNumber,pageCount)
+        const {getUser,pageCount,searchingName} = this.props
+        getUser(pageNumber,pageCount,searchingName)
     }
 
+    onFilterChanged = (term: string) =>{
+        const {getUser,pageCount} = this.props
+        getUser(1,pageCount,term)
+    }
     render() {
         return <div>
             {this.props.isFetching ? <Preloader/> : null}
@@ -61,7 +68,9 @@ class UsersAPIComponent extends React.Component<UsersPropsType, UsersPropsType> 
                    isFollowing={this.props.isFollowing}
                    FollowFriend={this.props.FollowFriend}
                    UnFollowFriend={this.props.UnFollowFriend}
-                   getUser={this.props.getUser}/>
+                   onFilterChanged={this.onFilterChanged}
+                   getUser={this.props.getUser}
+                   searchingName={this.props.searchingName}/>
         </div>
     }
 }
@@ -73,7 +82,8 @@ let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
         totalUsersCount: getTotalUsersCount(state),
         currentPage: getCurrentPage(state),
         isFetching: getIsFetching(state),
-        isFollowing: getIsFollowing(state)
+        isFollowing: getIsFollowing(state),
+        searchingName:getIsSearchingName(state)
     }
 }
 export default compose<React.ComponentType>(

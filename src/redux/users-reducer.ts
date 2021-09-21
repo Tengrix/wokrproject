@@ -1,7 +1,8 @@
 import {CommonResponseType, ResultCodesEnum, usersAPI} from "../api/api";
 import {Dispatch} from "redux";
 import {objectHelper} from "../components/utils/helper";
-import {InferActionsType} from "./redux-store";
+import {AppStateType, InferActionsType} from "./redux-store";
+import {userType} from "./dialog-reducer";
 
 export type UsersPhotoType = {
     small: string;
@@ -17,12 +18,14 @@ export type UsersType = {
     photos: UsersPhotoType;
 }
 export type InitialStateType = {
-    users: UsersType[]
-    pageCount: number
-    totalUsersCount: number
-    currentPage: number
-    isFetching: boolean
-    isFollowing: number[]
+    users: UsersType[];
+    pageCount: number;
+    totalUsersCount: number;
+    currentPage: number;
+    isFetching: boolean;
+    isFollowing: number[];
+    searchingName:string;
+
 }
 
 let initialState: InitialStateType = {
@@ -31,7 +34,8 @@ let initialState: InitialStateType = {
     totalUsersCount: 0,
     currentPage: 1,
     isFetching: true,
-    isFollowing: []
+    isFollowing: [],
+    searchingName: ''
 }
 
 const usersReducer = (state: InitialStateType = initialState, action: ActionType): InitialStateType => {
@@ -67,6 +71,10 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionType
                 ...state,
                 isFollowing: action.isFetching ? [...state.isFollowing, action.id] :
                     state.isFollowing.filter(el => el != action.id)
+            }
+        case 'SEARCH-USER':
+            return {
+                ...state, searchingName: action.term
             }
         default:
             return state;
@@ -118,17 +126,24 @@ export const usersActions = {
             id,
             isFetching
         } as const
+    },
+    setSearchingUser: (term:string) =>{
+        return{
+            type:'SEARCH-USER',
+            term
+        }as const
     }
 }
 
 
 
-export const getUser = (currentPage: number, pageCount: number) => {
-    return async (dispatch: Dispatch) => {
+export const getUser = (currentPage: number, pageCount: number, name:string) => {
+    return async (dispatch: Dispatch, ) => {
         try {
             dispatch(usersActions.setToggleFetching(true));
             dispatch(usersActions.setCurrentPage(currentPage))
-            const response = await usersAPI.getUsers(currentPage, pageCount)
+            dispatch(usersActions.setSearchingUser(name))
+            const response = await usersAPI.getUsers(currentPage, pageCount, name)
             dispatch(usersActions.setToggleFetching(false))
             dispatch(usersActions.setUser(response.items))
             dispatch(usersActions.setTotalUsersCount(response.totalCount))
@@ -137,7 +152,6 @@ export const getUser = (currentPage: number, pageCount: number) => {
         }
     }
 }
-
 export const followUnfollow = async (dispatch: Dispatch, userId: number, apiMethod: (userId:number)=> Promise<CommonResponseType>, actionCreator: (userId: number) => ActionType) => {
     dispatch(usersActions.setToggleFollowing(true, userId))
     const response = await apiMethod(userId)
@@ -149,6 +163,7 @@ export const followUnfollow = async (dispatch: Dispatch, userId: number, apiMeth
 
 export const FollowFriend = (userId: number) => {
     return async (dispatch: Dispatch) => {
+        debugger
         try {
             await followUnfollow(dispatch, userId, usersAPI.FollowFriends.bind(usersAPI), usersActions.follow)
         } catch (e) {
