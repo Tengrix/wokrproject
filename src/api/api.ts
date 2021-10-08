@@ -13,8 +13,8 @@ const instance = axios.create({
     }
 })
 export const usersAPI = {
-    getUsers (currentPage:number,pageCount:number,term:string) {
-        return  instance.get<GetUsersType>(`users?page=${currentPage}&count=${pageCount}&term=${term}`).then(response=> {
+    getUsers (currentPage:number,pageCount:number,term:string, friend:boolean| null) {
+        return  instance.get<GetUsersType>(`users?page=${currentPage}&count=${pageCount}&term=${term}` + (friend===null? '':`&friend=${friend}`)).then(response=> {
             return response.data
         })
     },

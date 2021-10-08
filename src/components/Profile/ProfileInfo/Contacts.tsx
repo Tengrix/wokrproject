@@ -1,3 +1,4 @@
+import React from "react";
 
 type ContactsType = {
     contactsTitle: string;
@@ -5,7 +6,7 @@ type ContactsType = {
     edit:boolean;
 }
 
-const Contacts = ({contactsTitle,contactsValue}:ContactsType) => {
+const Contacts = React.memo(({contactsTitle,contactsValue}:ContactsType) => {
     return(
         <div>
             <b>{contactsTitle}:</b>
@@ -18,5 +19,5 @@ const Contacts = ({contactsTitle,contactsValue}:ContactsType) => {
                 {/*<div style={{color: 'red'}}>{formik.errors.contacts}</div>}*/}
         </div>
     )
-}
+})
 export default Contacts;

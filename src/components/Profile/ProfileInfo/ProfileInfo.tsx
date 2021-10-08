@@ -17,7 +17,7 @@ type ProfileInfoType = {
     isOwner:boolean;
 }
 
-function ProfileInfo(props: ProfileInfoType) {
+const ProfileInfo = React.memo((props: ProfileInfoType) => {
     const isAuth = useSelector<AppStateType, boolean>(state => state.auth.data.isAuth)
     if (!props.profile) {
         return <Preloader/>
@@ -47,6 +47,6 @@ function ProfileInfo(props: ProfileInfoType) {
             </div>
         </div>
     )
-}
+})
 
 export default ProfileInfo

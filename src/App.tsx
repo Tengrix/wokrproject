@@ -9,13 +9,13 @@ import Friends from "./components/Friends/Friends";
 // import DialogsContainer from "./components/Dialogs/DialogsContainer";
 // import UsersContainer from "./components/Users/UsersContainer";
 // import ProfileContainer from "./components/Profile/ProfileContainer";
-import HeaderContainer from "./components/Header/HeaderContainer";
 // import LoginForm from "./components/Login/LoginForm";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "./redux/redux-store";
 import {initializeAppTC} from "./redux/app-reducer";
 import Preloader from "./components/common/Preloader/Preloader";
 import {CircularProgress} from "@material-ui/core";
+import Header from "./components/Header/Header";
 
 const Dialogs = React.lazy(() => import("./components/Dialogs/Dialogs"))
 const UsersContainer = React.lazy(() => import("./components/Users/UsersContainer"))
@@ -23,9 +23,9 @@ const ProfileContainer = React.lazy(() => import("./components/Profile/ProfileCo
 const LoginForm = React.lazy(() => import("./components/Login/LoginForm"))
 
 function App() {
+    console.log('Dialogs')
     const dispatch = useDispatch()
     const isInitialized = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
-
     useEffect(() => {
         dispatch(initializeAppTC())
     }, [])
@@ -40,7 +40,7 @@ function App() {
 
     return (
         <div className="app-wrapper">
-            <HeaderContainer/>
+            <Header/>
             <Navbar/>
             <div className={'app-wrapper-content'}>
                 <Switch>
@@ -55,7 +55,7 @@ function App() {
                             return <ProfileContainer/>
                         }}/>
                         <Route path='/users' render={() => {
-                            return <UsersContainer/>
+                            return <UsersContainer title={'Samurais'}/>
                         }}/>
                         <Route path='/login' render={() => {
                             return <LoginForm/>

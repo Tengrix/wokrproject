@@ -9,7 +9,7 @@ type ProfileStatusPropsType = {
     isAuth:boolean;
 }
 
-function ProfileStatus(props: ProfileStatusPropsType) {
+const ProfileStatus = React.memo((props: ProfileStatusPropsType) => {
     let [editMode, setEditMode] = useState(false);
     let [title, setTitle] = useState(props.status);
 
@@ -45,6 +45,6 @@ function ProfileStatus(props: ProfileStatusPropsType) {
         </div>
     )
 
-}
+})
 
 export default ProfileStatus

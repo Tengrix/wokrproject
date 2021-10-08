@@ -11,7 +11,7 @@ type UserType = {
     isFollowing: number[]
 }
 
-let User = ({user, UnFollowFriend, FollowFriend, isFollowing}: UserType) => {
+const User = React.memo(({user, UnFollowFriend, FollowFriend, isFollowing}: UserType) => {
 
     return <div>
                     <span>
@@ -41,5 +41,5 @@ let User = ({user, UnFollowFriend, FollowFriend, isFollowing}: UserType) => {
                             </span>
                     </span>
     </div>
-}
+})
 export default User

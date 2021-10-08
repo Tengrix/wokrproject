@@ -1,91 +1,41 @@
 import React, {useEffect} from 'react';
 import Profile from "./Profile";
-import {connect, useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
-import {
-    GetProfile,
-    getProfileStatus,
-    ProfilePhotoType,
-    ProfileType, saveUserPhoto,
-    updateProfileStatus
-} from "../../redux/profile-reducer";
-import {compose} from 'redux'
-import {withRouter} from "react-router";
-import {Redirect, RouteComponentProps, useParams} from "react-router-dom";
-import {CircularProgress} from "@material-ui/core";
+import {GetProfile, getProfileStatus} from "../../redux/profile-reducer";
+import {useParams} from "react-router-dom";
 import Preloader from "../common/Preloader/Preloader";
 
-type MapStateToPropsType = {
-    photos: ProfilePhotoType
-    profile: ProfileType | null;
-    status: string;
-    isAuth: boolean;
-    authorizedUserId: number | null;
-}
-type MapStateDispatchToPropsType = {
-    GetProfile: (userId: number) => void;
-    getProfileStatus: (userId: number) => void;
-    updateProfileStatus: (status: string) => void;
-    saveUserPhoto: (img: File) => void
-}
-type PathParamsType = {
-    userId: string
-}
-export type ProfileContainerPropsType = MapStateToPropsType & MapStateDispatchToPropsType
-export type PropsType = ProfileContainerPropsType & RouteComponentProps<PathParamsType>
 
-const ProfileContainer = (props: PropsType) => {
+const ProfileContainer = React.memo((props) => {
+
     const dispatch = useDispatch()
     let myId = useSelector<AppStateType, number | null>(state => state.auth.data.id)
-    let id = parseInt(props.match.params.userId)
+    let {userId} = useParams<{ userId:string }>()
     const setToggle = useSelector<AppStateType, boolean>(state => state.profilePage.setToggle)
     const isLogged = useSelector<AppStateType, boolean>(state => state.auth.data.isAuth)
 
     useEffect(() => {
         if (isLogged) {
-            if (!id && myId != null) {
-                props.GetProfile(myId)
+            if (!userId && myId != null) {
+                dispatch(GetProfile(myId))
                 dispatch(getProfileStatus(myId))
-
             } else {
-                props.GetProfile(id)
-                dispatch(getProfileStatus(id))
+                dispatch(GetProfile(Number(userId)))
+                dispatch(getProfileStatus(Number(userId)))
             }
         }
-    }, [id, myId])
+    }, [userId, myId])
     // if(!isLogged){
     //     return <div> <Redirect to={'/login'}/> </div>
     // }
     return (
         <div>
             {!setToggle ? <Preloader/> :
-                <Profile {...props}
-                         profile={props.profile}
-                         GetProfile={props.GetProfile}
-                         status={props.status}
-                         getProfileStatus={props.getProfileStatus}
-                         updateProfileStatus={props.updateProfileStatus}
-                         isAuth={props.isAuth}
-                         authorizedUserId={props.authorizedUserId}
-                         photos={props.photos}
-                         saveUserPhoto={props.saveUserPhoto}
-                         isOwner={!id}
-                />
+                <Profile/>
             }
         </div>
     )
-}
+})
 
-let mapStateToProps = (state: AppStateType): MapStateToPropsType => {
-    return {
-        profile: state.profilePage.profile,
-        status: state.profilePage.status,
-        isAuth: state.auth.data.isAuth,
-        authorizedUserId: state.auth.data.id,
-        photos: state.profilePage.profile.photos
-    }
-}
-export default compose<React.ComponentType>(connect(mapStateToProps,
-        {GetProfile, getProfileStatus, updateProfileStatus, saveUserPhoto}),
-    withRouter) //withAuthRedirectComponent
-    (ProfileContainer)
+export default ProfileContainer

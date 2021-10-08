@@ -7,7 +7,7 @@ type DialogItemsTypes = {
     id:string
 }
 
-function DialogItems(props:DialogItemsTypes) {
+const DialogItems = React.memo((props:DialogItemsTypes)=> {
 
     return (
         <div>
@@ -18,6 +18,6 @@ function DialogItems(props:DialogItemsTypes) {
 
         </div>
     )
-}
+})
 
 export default DialogItems

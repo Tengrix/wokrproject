@@ -10,7 +10,7 @@ import {dialogActions, InitialDialogStateType} from "../../redux/dialog-reducer"
 import {AppStateType} from "../../redux/redux-store";
 
 let maxLength = maxLengthCreator(10)
-function Dialogs() {
+const Dialogs = React.memo(() => {
     const dialogPage = useSelector<AppStateType,InitialDialogStateType>(state => state.dialogPage)
     const dispatch = useDispatch()
     let state = dialogPage
@@ -45,7 +45,7 @@ function Dialogs() {
             </div>
         </div>
     )
-}
+})
 const DialogMessageForm:React.FC<InjectedFormProps<string>> = (props) => {
 
     return(

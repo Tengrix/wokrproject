@@ -31,9 +31,9 @@ const MyPosts = React.memo((props) => {
     );
 });
 
-const PostForm: React.FC<InjectedFormProps<string>> = (props) => {
+const PostForm: React.FC<InjectedFormProps<string>> = React.memo(({handleSubmit}) => {
     return (
-        <form action="" onSubmit={props.handleSubmit}>
+        <form action="" onSubmit={handleSubmit}>
             <div>
                 <Field component={TextArea} name={'posts'} placeholder={'Enter some posts'}
                     validate={[requiredField, maxLength]}
@@ -44,6 +44,6 @@ const PostForm: React.FC<InjectedFormProps<string>> = (props) => {
             </div>
         </form>
     )
-}
+})
 export default MyPosts;
 export const PostFormRedux = reduxForm<string>({form: 'posts'})(PostForm)

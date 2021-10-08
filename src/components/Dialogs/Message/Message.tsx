@@ -6,7 +6,7 @@ type setMessageType = {
     id: number;
 }
 
-function Message(props: setMessageType) {
+const Message = React.memo((props: setMessageType) => {
     return (
         <div>
             <div>
@@ -16,6 +16,6 @@ function Message(props: setMessageType) {
             </div>
         </div>
     )
-}
+})
 
 export default Message

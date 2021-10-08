@@ -8,6 +8,10 @@ export type UsersPhotoType = {
     small: string;
     large: string;
 }
+export type filterType = {
+    searchingName:string;
+    isFriend:null|boolean;
+}
 
 export type UsersType = {
     id: number;
@@ -17,28 +21,30 @@ export type UsersType = {
     followed: boolean
     photos: UsersPhotoType;
 }
-export type InitialStateType = {
+export type userInitialStateType = {
     users: UsersType[];
     pageCount: number;
     totalUsersCount: number;
     currentPage: number;
     isFetching: boolean;
     isFollowing: number[];
-    searchingName:string;
-
+    filter:filterType
 }
 
-let initialState: InitialStateType = {
+let initialState: userInitialStateType = {
     users: [] as UsersType[],
     pageCount: 10,
     totalUsersCount: 0,
     currentPage: 1,
     isFetching: true,
     isFollowing: [],
-    searchingName: ''
+    filter:{
+        searchingName: '',
+        isFriend:null as null|boolean,
+    }
 }
 
-const usersReducer = (state: InitialStateType = initialState, action: ActionType): InitialStateType => {
+const usersReducer = (state: userInitialStateType = initialState, action: ActionType): userInitialStateType => {
     switch (action.type) {
         case 'FOLLOW':
             return {
@@ -74,8 +80,12 @@ const usersReducer = (state: InitialStateType = initialState, action: ActionType
             }
         case 'SEARCH-USER':
             return {
-                ...state, searchingName: action.term
+                ...state, filter: action.payload.filter
             }
+        // case "IS-FRIEND":
+        //     return {
+        //         ...state, isFriend: action.friend
+        //     }
         default:
             return state;
     }
@@ -127,23 +137,30 @@ export const usersActions = {
             isFetching
         } as const
     },
-    setSearchingUser: (term:string) =>{
+    setSearchingUser: (filter:filterType) =>{
         return{
             type:'SEARCH-USER',
-            term
+            payload:{filter}
         }as const
-    }
+    },
+    // isUserMyFriend: (friend: boolean | null) =>{
+    //     return{
+    //         type:'IS-FRIEND',
+    //         friend
+    //     }as const
+    // },
 }
 
 
 
-export const getUser = (currentPage: number, pageCount: number, name:string) => {
-    return async (dispatch: Dispatch, ) => {
+export const getUser = (currentPage: number, pageCount: number, filter:filterType) => {
+    return async (dispatch: Dispatch) => {
         try {
+            debugger
             dispatch(usersActions.setToggleFetching(true));
             dispatch(usersActions.setCurrentPage(currentPage))
-            dispatch(usersActions.setSearchingUser(name))
-            const response = await usersAPI.getUsers(currentPage, pageCount, name)
+            dispatch(usersActions.setSearchingUser(filter))
+            const response = await usersAPI.getUsers(currentPage, pageCount,filter.searchingName, filter.isFriend)
             dispatch(usersActions.setToggleFetching(false))
             dispatch(usersActions.setUser(response.items))
             dispatch(usersActions.setTotalUsersCount(response.totalCount))
@@ -163,7 +180,6 @@ export const followUnfollow = async (dispatch: Dispatch, userId: number, apiMeth
 
 export const FollowFriend = (userId: number) => {
     return async (dispatch: Dispatch) => {
-        debugger
         try {
             await followUnfollow(dispatch, userId, usersAPI.FollowFriends.bind(usersAPI), usersActions.follow)
         } catch (e) {

@@ -25,5 +25,5 @@ export const getIsFollowing = (state:AppStateType) => {
     return state.usersPage.isFollowing
 }
 export const getIsSearchingName = (state:AppStateType) => {
-    return state.usersPage.searchingName
+    return state.usersPage.filter
 }

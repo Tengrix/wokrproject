@@ -1,42 +1,44 @@
-import {ChangeEvent, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
+import {useSelector} from "react-redux";
+import {AppStateType} from "../../redux/redux-store";
+import {filterType, userInitialStateType} from "../../redux/users-reducer";
+import {SubmitHandler, useForm} from "react-hook-form";
+import Select from "react-select/base";
 
-
+type useFormType = {
+    searchingName: string;
+    isFriend: null|boolean
+        // 'null' | 'false' | 'true'
+}
 type PropsType = {
-    searchUsers: (term:string) => void
+    onFilterChanged: (filter: filterType) => void;
+    filter: filterType
 }
 
-const SearchUsers = (props: PropsType) => {
+const SearchUsers = React.memo((props: PropsType) => {
+    const {register, handleSubmit, watch, setValue} = useForm<useFormType>()
 
-    const [searchMode, setSearchMode] = useState<boolean>(false)
-    const [userName, setUserName] = useState<string>('')
-    const activateMode = () => {
-        setSearchMode(!searchMode)
+    const onChangeHandler: SubmitHandler<useFormType> = (data) => {
+        debugger
+        props.onFilterChanged(data)
     }
-    const onSearchQuestionHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setUserName(e.currentTarget.value)
-    }
-
-    const onClickHandler = () => {
-        props.searchUsers(userName)
-        // setUserName('')
-    }
-
     return (
-        <div>
-            <button onClick={activateMode}>find</button>
-            {!searchMode &&
-            <span>
-                    <button onClick={onClickHandler}>search</button>
+        <form onSubmit={handleSubmit(onChangeHandler)} >
+            <div>
+                <span>
+                    <input type={'submit'}/>
                     <div>
-                            <input type="text"
-                                   value={userName}
-                                   onChange={onSearchQuestionHandler}
-                                   placeholder={'Search name'}
-                            />
+                            <input onClick={()=>setValue("searchingName", props.filter.searchingName)} {...register('searchingName')}/>
+                        <select {...register('isFriend')}>
+                            <option value='null'>All</option>
+                            <option value="true">Followers</option>
+                            <option value="false">Not Followers</option>
+                        </select>
                     </div>
                 </span>
-            }
-        </div>
+
+            </div>
+        </form>
     )
-}
+})
 export default SearchUsers

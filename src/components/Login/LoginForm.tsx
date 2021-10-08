@@ -8,24 +8,18 @@ import {Redirect} from "react-router-dom";
 import {AppStateType} from "../../redux/redux-store";
 import s from './../common/FormController/FormControl.module.css'
 
-type MapStateToPropsType2 = {
-    isAuth: boolean
-}
+
 export type FormDataType = {
     login: string;
     password: string;
     rememberMe: boolean;
     captcha:string
 }
-type LoginType = {
-    AuthLogin: (email: string, password: string, rememberMe: boolean,captcha:string) => void;
-    isAuth: boolean
-}
+
 let maxLength = maxLengthCreator(30)
 
-const LoginForm: React.FC<InjectedFormProps<FormDataType>> = ({handleSubmit, error}) => {
+const LoginForm: React.FC<InjectedFormProps<FormDataType>> = React.memo( ({handleSubmit, error}) => {
     let captcha = useSelector<AppStateType, string>(state => state.auth.captcha)
-    console.log(captcha)
     return (
         <form action="" onSubmit={handleSubmit}>
             <div>
@@ -55,19 +49,17 @@ const LoginForm: React.FC<InjectedFormProps<FormDataType>> = ({handleSubmit, err
             </div>
         </form>
     )
-}
+})
 export const LoginReduxForm = reduxForm<FormDataType>({form: 'login'})(LoginForm)
-let mapStateToPropsForRedirect = (state: AppStateType): MapStateToPropsType2 => {
-    return {
-        isAuth: state.auth.data.isAuth
-    }
-}
-const Login = (props: LoginType) => {
+
+const Login = React.memo(() => {
+    const isAuth = useSelector<AppStateType,boolean>(state => state.auth.data.isAuth)
+    const dispatch = useDispatch()
     const onSubmit = (formData: FormDataType) => {
-        props.AuthLogin(formData.login, formData.password, formData.rememberMe,formData.captcha)
+        dispatch(AuthLogin(formData.login, formData.password, formData.rememberMe,formData.captcha))
     }
-    if (props.isAuth) {
-        return <Redirect to={'profile'}/>
+    if (isAuth) {
+        return <Redirect to={'/profile'}/>
     }
     return (
         <div>
@@ -76,7 +68,7 @@ const Login = (props: LoginType) => {
         </div>
 
     )
-}
+})
 
 
-export default connect(mapStateToPropsForRedirect, {AuthLogin, AuthLogOut})(Login)
+export default Login

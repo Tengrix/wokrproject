@@ -33,7 +33,7 @@ export type ProfileType = {
     photos: ProfilePhotoType;
 }
 
-export type InitialStateType = {
+export type profileInitialStateType = {
     message: messageType[];
     profile: ProfileType;
     status: string;
@@ -42,7 +42,7 @@ export type InitialStateType = {
     setToggle:boolean;
 }
 
-let initialState: InitialStateType = {
+let initialState: profileInitialStateType = {
     message: [
         {id: 1, message: 'Hi, how are you?', likeCount: 22},
         {id: 2, message: 'It is my first post', likeCount: 11},
@@ -75,7 +75,7 @@ let initialState: InitialStateType = {
     setToggle:false
 }
 
-export const profileReducer = (state: InitialStateType = initialState, action: ActionType): InitialStateType => {
+export const profileReducer = (state: profileInitialStateType = initialState, action: ActionType): profileInitialStateType => {
     switch (action.type) {
         case 'ADD-POST': {
             const newPost: messageType = {

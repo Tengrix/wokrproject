@@ -1,7 +1,7 @@
 import {useFormik} from "formik";
 import {profileActions, ProfileType, saveUserProfile} from "../../../redux/profile-reducer";
 import {useDispatch, useSelector} from "react-redux";
-import {useState} from "react";
+import React, {useState} from "react";
 import s from './ProfileInfo.module.css'
 import {makeStyles, Modal, TextField} from "@material-ui/core";
 import {AppStateType} from "../../../redux/redux-store";
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2, 4, 3),
     },
 }));
-const ProfileData = (props: PropsType) => {
+const ProfileData = React.memo((props: PropsType) => {
     const dispatch = useDispatch()
     const errors = useSelector<AppStateType,string>(state => state.profilePage.error)
     const [serverError, setServerError] = useState<string>(errors)
@@ -199,5 +199,5 @@ const ProfileData = (props: PropsType) => {
 
         </div>
     )
-}
+})
 export default ProfileData;
