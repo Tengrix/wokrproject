@@ -1,9 +1,6 @@
-import React, {ChangeEvent, useState} from "react";
-import {useSelector} from "react-redux";
-import {AppStateType} from "../../redux/redux-store";
-import {filterType, userInitialStateType} from "../../redux/users-reducer";
+import React from "react";
+import {filterType} from "../../redux/users-reducer";
 import {SubmitHandler, useForm} from "react-hook-form";
-import Select from "react-select/base";
 
 type useFormType = {
     searchingName: string;
@@ -16,7 +13,14 @@ type PropsType = {
 }
 
 const SearchUsers = React.memo((props: PropsType) => {
-    const {register, handleSubmit, watch, setValue} = useForm<useFormType>()
+    console.log('isFriend',props.filter.isFriend)
+    console.log('name',props.filter.searchingName)
+    const {register, handleSubmit} = useForm<useFormType>({
+        defaultValues: {
+            searchingName:props.filter.searchingName,
+            isFriend:props.filter.isFriend
+        }
+    })
 
     const onChangeHandler: SubmitHandler<useFormType> = (data) => {
         debugger
@@ -28,7 +32,7 @@ const SearchUsers = React.memo((props: PropsType) => {
                 <span>
                     <input type={'submit'}/>
                     <div>
-                            <input onClick={()=>setValue("searchingName", props.filter.searchingName)} {...register('searchingName')}/>
+                            <input {...register('searchingName')}/>
                         <select {...register('isFriend')}>
                             <option value='null'>All</option>
                             <option value="true">Followers</option>

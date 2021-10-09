@@ -14,6 +14,7 @@ import {
 import {AppStateType} from "../../redux/redux-store";
 import {useHistory} from "react-router-dom";
 import * as queryString from "querystring";
+import SearchWithFormik from "./SearchWithFormik";
 
 
 type UsersType = {
@@ -33,6 +34,7 @@ const Users = React.memo((props: UsersType) => {
     const history = useHistory()
 
     useEffect(() => {
+        debugger
         const parsed = queryString.parse(history.location.search.substr(1))
         let actualPage = currentPage
         let actualFilter = filter
@@ -53,11 +55,12 @@ const Users = React.memo((props: UsersType) => {
         dispatch(getUser(actualPage, pageCount, actualFilter))
     }, [])
     useEffect(() => {
+        debugger
         history.push({
             pathname: '/users',
             search: `?term=${filter.searchingName}&friend=${filter.isFriend}&page=${currentPage}`
         })
-    }, [filter.searchingName, filter.isFriend, currentPage])
+    }, [filter, currentPage])
 
     // const searchUsers = (filter:filterType) => {
     //     dispatch(usersActions.setSearchingUser(filter))
@@ -82,7 +85,7 @@ const Users = React.memo((props: UsersType) => {
     return <div>
         <h1>{props.title}</h1>
         <span>
-           <SearchUsers filter={filter} onFilterChanged={onFilterChanged}/>
+           <SearchWithFormik onFilterChanged={onFilterChanged}/>
         </span>
 
         <Pagination

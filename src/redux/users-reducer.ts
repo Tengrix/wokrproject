@@ -80,7 +80,7 @@ const usersReducer = (state: userInitialStateType = initialState, action: Action
             }
         case 'SEARCH-USER':
             return {
-                ...state, filter: action.payload.filter
+                ...state, filter: action.payload
             }
         // case "IS-FRIEND":
         //     return {
@@ -140,7 +140,7 @@ export const usersActions = {
     setSearchingUser: (filter:filterType) =>{
         return{
             type:'SEARCH-USER',
-            payload:{filter}
+            payload:filter
         }as const
     },
     // isUserMyFriend: (friend: boolean | null) =>{
@@ -156,7 +156,6 @@ export const usersActions = {
 export const getUser = (currentPage: number, pageCount: number, filter:filterType) => {
     return async (dispatch: Dispatch) => {
         try {
-            debugger
             dispatch(usersActions.setToggleFetching(true));
             dispatch(usersActions.setCurrentPage(currentPage))
             dispatch(usersActions.setSearchingUser(filter))
