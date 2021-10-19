@@ -7,6 +7,8 @@ import userPhoto from './../../../Pics/51f6fb256629fc755b8870c801092942.png'
 import ProfileData from "./ProfileData";
 import {useSelector} from "react-redux";
 import {AppStateType} from "../../../redux/redux-store";
+import {Avatar} from "antd";
+import { AntDesignOutlined } from '@ant-design/icons';
 
 type ProfileInfoType = {
     profile: ProfileType | null
@@ -31,7 +33,8 @@ const ProfileInfo = React.memo((props: ProfileInfoType) => {
         <div>
             <div className={s.descriptionBlock}>
                 <div>
-                    <img src={props.photos.large || userPhoto} alt="profile pic"/>
+                    <Avatar size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                            icon={<AntDesignOutlined />} src={props.photos.large || userPhoto} alt="profile pic"/>
                     {props.isOwner&&<input type="file" disabled={!isAuth} onChange={onMainPhotoSelected}/>}
                     <ProfileStatus status={props.status}
                                    updateProfileStatus={props.updateProfileStatus}

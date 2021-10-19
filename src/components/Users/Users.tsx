@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react'
 import Pagination from "../common/Paginator/Pagination";
 import User from "./User";
-import SearchUsers from "./search-users";
+import SearchUsers from "./SearchWithHookForm";
 import {useDispatch, useSelector} from "react-redux";
 import {
     filterType,
@@ -34,7 +34,6 @@ const Users = React.memo((props: UsersType) => {
     const history = useHistory()
 
     useEffect(() => {
-        debugger
         const parsed = queryString.parse(history.location.search.substr(1))
         let actualPage = currentPage
         let actualFilter = filter
@@ -55,17 +54,11 @@ const Users = React.memo((props: UsersType) => {
         dispatch(getUser(actualPage, pageCount, actualFilter))
     }, [])
     useEffect(() => {
-        debugger
         history.push({
-            pathname: '/users',
+            pathname: '/developers',
             search: `?term=${filter.searchingName}&friend=${filter.isFriend}&page=${currentPage}`
         })
     }, [filter, currentPage])
-
-    // const searchUsers = (filter:filterType) => {
-    //     dispatch(usersActions.setSearchingUser(filter))
-    //     onFilterChanged(filter)
-    // }
 
     const onPageChanged = (pageNumber: number) => {
         dispatch(getUser(pageNumber, pageCount, filter))

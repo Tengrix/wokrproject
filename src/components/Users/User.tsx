@@ -3,7 +3,7 @@ import s from "./UsersApiComponent.module.css";
 import {UsersType} from "../../redux/users-reducer";
 import {NavLink} from 'react-router-dom';
 import userPhoto from './../../Pics/51f6fb256629fc755b8870c801092942.png'
-
+import { Avatar, Image } from 'antd';
 type UserType = {
     user: UsersType
     FollowFriend: (id: number) => void,
@@ -17,9 +17,7 @@ const User = React.memo(({user, UnFollowFriend, FollowFriend, isFollowing}: User
                     <span>
                         <div>
                             <NavLink to={'/profile/' + user.id}>
-                                <img className={s.img}
-                                     src={user.photos.small != null ? user.photos.small : userPhoto}
-                                     alt=""/>
+                                <Avatar src={<Image src={user.photos.small != null ? user.photos.small : userPhoto} />} alt=""/>
                             </NavLink>
                         </div>
                         <div>

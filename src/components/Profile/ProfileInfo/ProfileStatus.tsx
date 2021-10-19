@@ -1,7 +1,5 @@
-import React, {ChangeEvent, useEffect, useState} from 'react'
-import {useDispatch, useSelector} from "react-redux";
-import {updateProfileStatus} from "../../../redux/profile-reducer";
-import {AppStateType} from "../../../redux/redux-store";
+import React, {ChangeEvent, useState} from 'react'
+
 type ProfileStatusPropsType = {
     status: string;
     updateProfileStatus: (status:string) => void;

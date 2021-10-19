@@ -72,7 +72,7 @@ let initialState: profileInitialStateType = {
     isOwner: false,
     status: '',
     error: '',
-    setToggle:false
+    setToggle:false,
 }
 
 export const profileReducer = (state: profileInitialStateType = initialState, action: ActionType): profileInitialStateType => {
@@ -116,6 +116,10 @@ export const profileReducer = (state: profileInitialStateType = initialState, ac
         case "IS-FETCHING":
             return {
                 ...state, setToggle:action.value
+            }
+        case "UPDATE-NAME":
+            return {
+                ...state, profile:{...state.profile, fullName:action.name}
             }
         default:
             return state;
@@ -172,6 +176,12 @@ export const profileActions = {
             type: 'SET-ERROR',
             error
         } as const
+    },
+    updateProfilesName:(name:string)=>{
+        return{
+            type:'UPDATE-NAME',
+            name
+        }as const
     }
 }
 
@@ -199,12 +209,12 @@ export const updateProfileStatus = (status: string) => async (dispatch: Dispatch
     const response = await profileAPI.updateStatus(status)
     if (response.data.resultCode === ResultCodesEnum.Success) {
         dispatch(profileActions.setStatus(status))
+        dispatch(profileActions.isOwner(true))
     } else {
         console.log(response.data.messages[0])
     }
 }
 export const saveUserProfile = (profile: ProfileType) => async (dispatch: ThunkDispatch<any, any, any>, getState: () => AppStateType) => {
-
     let userId = getState().auth.data.id
     let response = await profileAPI.saveProfile(profile)
     if (response.data.resultCode === ResultCodesEnum.Success) {

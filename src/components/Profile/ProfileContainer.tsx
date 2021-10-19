@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import Profile from "./Profile";
 import {useDispatch, useSelector} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
-import {GetProfile, getProfileStatus} from "../../redux/profile-reducer";
+import {GetProfile, getProfileStatus, profileActions} from "../../redux/profile-reducer";
 import {useParams} from "react-router-dom";
 import Preloader from "../common/Preloader/Preloader";
 
@@ -20,9 +20,11 @@ const ProfileContainer = React.memo((props) => {
             if (!userId && myId != null) {
                 dispatch(GetProfile(myId))
                 dispatch(getProfileStatus(myId))
+                dispatch(profileActions.isOwner(true))
             } else {
                 dispatch(GetProfile(Number(userId)))
                 dispatch(getProfileStatus(Number(userId)))
+                dispatch(profileActions.isOwner(false))
             }
         }
     }, [userId, myId])

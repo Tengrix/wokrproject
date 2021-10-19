@@ -159,7 +159,7 @@ const ProfileData = React.memo((props: PropsType) => {
             </form>
         </div>
     )
-
+    console.log(props.isAuth, props.isOwner)
     return (
         <div>
             {props.isOwner && <button type="button" disabled={!props.isAuth} onClick={handleOpen}>

@@ -1,12 +1,12 @@
 import React from "react";
 import {filterType} from "../../redux/users-reducer";
 import {SubmitHandler, useForm} from "react-hook-form";
-import {useFormik} from "formik";
+import {Formik, Field, Form} from "formik";
 import {useSelector} from "react-redux";
 import {AppStateType} from "../../redux/redux-store";
 
 type IsFriend = 'null' | 'false' | 'true';
-type useFormikType = {
+type useFormType = {
     searchingName: string;
     isFriend: IsFriend
 }
@@ -16,39 +16,33 @@ type PropsType = {
 }
 
 const SearchWithFormik = React.memo((props: PropsType) => {
-    const filter = useSelector<AppStateType,filterType>(state => state.usersPage.filter)
-
-    const initialValues:useFormikType = {searchingName:filter.searchingName,isFriend:String(filter.isFriend) as IsFriend}
-    const formik = useFormik({
-        enableReinitialize:true,
-        initialValues:initialValues,
-        onSubmit:(values:useFormikType) => {
-            debugger
-            const filterConverter = {
-                searchingName:values.searchingName,
-                isFriend:values.isFriend === 'null'? null: values.isFriend === 'true'?true: false
-            }
-            props.onFilterChanged(filterConverter)
+    const filter = useSelector<AppStateType, filterType>(state => state.usersPage.filter)
+    const submit = (values: useFormType, {setSubmitting}: { setSubmitting: (isSubmitting: boolean) => void }) => {
+        const filterConverter = {
+            searchingName: values.searchingName,
+            isFriend: values.isFriend === 'null' ? null : values.isFriend === 'true' ? true : false
         }
-    })
-    console.log(filter.searchingName,'isFriend',filter.isFriend)
-    return (
-        <form onSubmit={formik.handleSubmit} >
-            <div>
-                <span>
-                    <button type={'submit'}>Search</button>
-                    <div>
-                            <input defaultValue={filter.searchingName} name={'searchingName'} onChange={formik.handleChange} />
-                        <select value={String(filter.isFriend) as 'true'|'false'|'null'} name={'isFriend'} onChange={formik.handleChange}>
-                            <option value='null'>All</option>
-                            <option value="true">Followers</option>
-                            <option value="false">Not Followers</option>
-                        </select>
-                    </div>
-                </span>
-
-            </div>
-        </form>
-    )
+        props.onFilterChanged(filterConverter)
+        setSubmitting(false)
+    }
+    return <div>
+        <Formik
+            enableReinitialize
+            initialValues={{searchingName: filter.searchingName, isFriend: String(filter.isFriend) as IsFriend}}
+            onSubmit={submit}
+        >
+            {({isSubmitting}) => (
+                <Form>
+                    <Field type={'text'} name={'searchingName'}/>
+                    <Field name={'isFriend'} as='select'>
+                        <option value='null'>All</option>
+                        <option value="true">Followers</option>
+                        <option value="false">Not Followers</option>
+                    </Field>
+                    <button disabled={isSubmitting} type={'submit'}>Search</button>
+                </Form>
+                )}
+        </Formik>
+    </div>
 })
 export default SearchWithFormik
