@@ -35,7 +35,7 @@ function App() {
     const dispatch = useDispatch()
     const isInitialized = useSelector<AppStateType, boolean>(state => state.appPage.isInitialized)
     const {login, email} = useSelector<AppStateType, setUserDataType>(state => state.auth.data)
-    const profileName = useSelector<AppStateType, string>(state => state.profilePage.profile.fullName)
+        const profileName = useSelector<AppStateType, string>(state => state.profilePage.profile.fullName)
     useEffect(()=>{
         dispatch(profileActions.updateProfilesName(profileName))
     },[])

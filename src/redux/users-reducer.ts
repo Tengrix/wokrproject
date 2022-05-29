@@ -8,7 +8,7 @@ export type UsersPhotoType = {
     small: string;
     large: string;
 }
-export type filterType = {
+export type  filterType = {
     searchingName:string;
     isFriend:null|boolean;
 }

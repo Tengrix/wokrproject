@@ -48,7 +48,6 @@ const Users = React.memo((props: UsersType) => {
                 break;
             case 'true':
                 actualFilter = {...actualFilter, isFriend:true}
-
                 break;
         }
         dispatch(getUser(actualPage, pageCount, actualFilter))
